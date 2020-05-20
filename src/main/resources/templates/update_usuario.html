@@ -16,7 +16,7 @@
 
                     <div class="row">
                         <div class="col-md-6">
-                            <form action="#" th:action="@{/addusuario}" th:object="${usuario}" method="post">
+                            <form action="#" th:action="@{/updateusuario/{id}(id=${usuario.id})}" th:object="${usuario}" method="post">
                                 <div class="form-group">
                                     <label for="nome" class="col-form-label">Nome</label>
                                     <input autofocus type="text" th:field="*{nome}" class="form-control" id="nome" placeholder="Nome">
