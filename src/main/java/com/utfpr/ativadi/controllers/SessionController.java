@@ -32,7 +32,6 @@ criar uma tela não autorizado
 @Controller
 public class SessionController {
     private final UsuarioRepository usuarioRepository;
-    private final EmailService emailSender;
     private final String USUARIO = "usuario";
     private final String ERROR = "errorMessage";
     private final String SUCESS = "sucessMessage";
@@ -43,9 +42,11 @@ public class SessionController {
     private Logger logger = LoggerFactory.getLogger(SessionController.class);
 
     @Autowired
-    public SessionController(UsuarioRepository usuarioRepository, EmailService emailService) {
+    public EmailService emailSender;
+
+    @Autowired
+    public SessionController(UsuarioRepository usuarioRepository) {
         this.usuarioRepository = usuarioRepository;
-        this.emailSender = emailService;
         logger.warn("Entrou em Session Controller");
     }
 
