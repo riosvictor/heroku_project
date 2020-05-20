@@ -42,7 +42,7 @@ public class SessionController {
     private Logger logger = LoggerFactory.getLogger(SessionController.class);
 
     @Autowired
-    public EmailService emailSender;
+    public EmailService emailService;
 
     @Autowired
     public SessionController(UsuarioRepository usuarioRepository) {
@@ -78,7 +78,7 @@ public class SessionController {
         Optional<Usuario> usuario = usuarioRepository.findByEmail(email);
 
         if(usuario.isPresent()){
-            emailSender.sendEmail(Arrays.asList(usuario.get().getEmail())
+            emailService.sendEmail(Arrays.asList(usuario.get().getEmail())
                                  , "Recuperação da Senha de Acesso"
                                  , "Olá " + usuario.get().getNome() + ",\n" +
                                          "Como solicitado através do ATIVA, estamos enviado a sua " +
