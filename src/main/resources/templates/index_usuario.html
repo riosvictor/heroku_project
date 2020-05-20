@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="pt-br">
+    <head th:replace="base :: common_header(~{::title})">
+        <title>Usuário</title>
+    </head>
+
+    <body>
+        <section class="header-area">
+            <div class="navbar-area" th:insert="~{base :: common_navbar}">
+            </div>
+
+            <div id="home" class="slider-area">
+                <div th:switch="${usuarios}" class="container my-5">
+                    <div th:if="${errorMessage}" th:text="${errorMessage}" style="color:red"/>
+                    <div th:if="${sucessMessage}" th:text="${sucessMessage}" style="color:green"/>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <a href="/newusuario"
+                               class="btn btn-primary btn-novo d-flex flex-row-reverse"
+                               th:if="${session.usuario.tipo == 'admin'}"
+                            >
+                                <em class="fas fa-user-plus ml-2"></em>
+                            </a>
+                            <p></p>
+
+                            <h2 th:if="${#lists.isEmpty(usuarios)}">Sem registros!</h2>
+                            <div th:unless="${#lists.isEmpty(usuarios)}">
+                                <h2 class="d-flex flex-row">
+                                    <span th:if="${session.usuario.tipo == 'admin'}">Usuários</span>
+                                    <span th:unless="${session.usuario.tipo == 'admin'}">Meu Usuário</span>
+                                </h2>
+                                <table class="table table-striped" style="width:100%;">
+                                    <caption th:if="${session.usuario.tipo == 'admin'}">Usuários cadastrados</caption>
+                                    <thead class="thead-light">
+                                    <tr>
+                                        <th scope="col">Código</th>
+                                        <th scope="col">Nome</th>
+                                        <th scope="col">E-mail</th>
+                                        <th scope="col">Tipo</th>
+                                        <th scope="col">Grau</th>
+                                        <th scope="col">Turno</th>
+                                        <th scope="col">Alterar</th>
+                                        <th scope="col" th:if="${session.usuario.tipo == 'admin'}">Remover</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr th:each="usuario : ${usuarios}">
+                                        <td th:text="${usuario.id}"></td>
+                                        <td th:text="${usuario.nome}" style="width:80%;"></td>
+                                        <td th:text="${usuario.email}" style="width:80%;"></td>
+                                        <td>
+                                            <span th:if="${usuario.tipo == 'admin'}">Administrador</span>
+                                            <span th:if="${usuario.tipo == 'professor'}">Professor</span>
+                                            <span th:if="${usuario.tipo == 'aluno'}">Aluno</span>
+                                        </td>
+                                        <td>
+                                            <span th:if="${usuario.grau == 0}"></span>
+                                            <span th:if="${usuario.grau == 1}">Pré-Escolar</span>
+                                            <span th:if="${usuario.grau == 2}">Escolar</span>
+                                        </td>
+                                        <td>
+                                            <span th:if="${usuario.turno == 0}"></span>
+                                            <span th:if="${usuario.turno == 1}">Matutino</span>
+                                            <span th:if="${usuario.turno == 2}">Vespertino</span>
+                                        </td>
+                                        <td>
+                                            <a th:href="@{/editusuario/{id}(id=${usuario.id})}"
+                                               class="btn btn-primary"
+                                            >
+                                                <em class="fas fa-user-edit ml-2"></em>
+                                            </a>
+                                        </td>
+                                        <td th:if="${session.usuario.tipo == 'admin'}">
+                                            <a th:href="@{/deleteusuario/{id}(id=${usuario.id})}"
+                                               class="btn btn-primary"
+                                            >
+                                                <em class="fas fa-user-times ml-2"></em>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </section>
+
+        <footer id="footer" class="footer-area" th:insert="~{base :: common_footer}">
+        </footer>
+
+        <div th:insert="~{base :: common_script}">
+        </div>
+    </body>
+</html>

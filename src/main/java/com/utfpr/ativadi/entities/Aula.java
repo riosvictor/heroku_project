@@ -21,7 +21,7 @@ public abstract class Aula implements Serializable {
     @NotNull(message = "O Professor é um campo obrigatório")
     @ManyToOne
     @JoinColumn(name="id_professor")
-    private Professor professor;
+    private Usuario professor;
 
     @NotNull(message = "A Matéria é um campo obrigatório")
     @ManyToOne
@@ -68,11 +68,11 @@ public abstract class Aula implements Serializable {
         this.data = data;
     }
 
-    public Professor getProfessor() {
+    public Usuario getProfessor() {
         return professor;
     }
 
-    public void setProfessor(Professor professor) {
+    public void setProfessor(Usuario professor) {
         this.professor = professor;
     }
 

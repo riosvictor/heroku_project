@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="pt-br">
+    <head th:replace="base :: common_header(~{::title})">
+        <title>Alterar Usuário</title>
+    </head>
+
+    <body>
+        <section class="header-area">
+            <div class="navbar-area" th:insert="~{base :: common_navbar}">
+            </div>
+
+            <div id="home" class="slider-area">
+                <div class="container my-5">
+                    <h2 class="mb-5">Alterar Usuário</h2>
+                    <div th:if="${errorMessage}" th:text="${errorMessage}" style="color:red"/>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <form action="#" th:action="@{/addusuario}" th:object="${usuario}" method="post">
+                                <div class="form-group">
+                                    <label for="nome" class="col-form-label">Nome</label>
+                                    <input autofocus type="text" th:field="*{nome}" class="form-control" id="nome" placeholder="Nome">
+                                    <span th:if="${#fields.hasErrors('nome')}" th:errors="*{nome}" class="text-danger"></span>
+                                </div>
+                                <div class="form-group">
+                                    <label for="email" class="col-form-label">E-mail</label>
+                                    <input type="email" th:field="*{email}" class="form-control" id="email" placeholder="E-mail">
+                                    <span th:if="${#fields.hasErrors('email')}" th:errors="*{email}" class="text-danger"></span>
+                                </div>
+                                <div class="form-group">
+                                    <label for="senha" class="col-form-label">Senha</label>
+                                    <input type="password" th:field="*{senha}" class="form-control" id="senha" placeholder="Senha">
+                                    <span th:if="${#fields.hasErrors('senha')}" th:errors="*{senha}" class="text-danger"></span>
+                                </div>
+                                <div class="form-group">
+                                    <label for="tipo" class="col-form-label">Tipo</label>
+                                    <select th:field="*{tipo}" id="tipo" class="form-control">
+                                        <option th:value="admin" th:text="Administrador"></option>
+                                        <option th:value="professor" th:text="Professor"></option>
+                                        <option th:value="aluno" th:text="Aluno"></option>
+                                    </select>
+                                    <span th:if="${#fields.hasErrors('tipo')}" th:errors="*{tipo}" class="text-danger"></span>
+                                    </br>
+                                </div>
+                                <div class="form-group">
+                                    <label for="grau" class="col-form-label">Grau</label>
+                                    <select th:field="*{grau}" id="grau" class="form-control">
+                                        <option th:value="0"></option>
+                                        <option th:value="1" th:text="Pré-Escolar"></option>
+                                        <option th:value="2" th:text="Escolar"></option>
+                                    </select>
+                                    <span th:if="${#fields.hasErrors('grau')}" th:errors="*{grau}" class="text-danger"></span>
+                                    </br>
+                                </div>
+                                <div class="form-group">
+                                    <label for="turno" class="col-form-label">Turno</label>
+                                    <select th:field="*{turno}" id="turno" class="form-control">
+                                        <option th:value="0"></option>
+                                        <option th:value="1" th:text="Matutino"></option>
+                                        <option th:value="2" th:text="Vespertino"></option>
+                                    </select>
+                                    <span th:if="${#fields.hasErrors('turno')}" th:errors="*{turno}" class="text-danger"></span>
+                                    </br>
+                                </div>
+
+                                <div class="row">
+                                    <div class="d-inline p-3">
+                                        <input type="submit" class="btn btn-primary" value="Confirmar">
+                                        <a href="/usuario" class="btn btn-primary">Voltar</a>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </section>
+
+        <footer id="footer" class="footer-area" th:insert="~{base :: common_footer}">
+        </footer>
+
+        <div th:insert="~{base :: common_script}">
+        </div>
+    </body>
+</html>

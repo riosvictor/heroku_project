@@ -16,7 +16,7 @@ import javax.validation.Valid;
 @Controller
 public class AulaController {
     private final AulaRepository aulaRepository;
-    private final ProfessorRepository professorRepository;
+    private final UsuarioRepository professorRepository;
     private final MateriaRepository materiaRepository;
     private final TurmaRepository turmaRepository;
     private final AtividadeRepository atividadeRepository;
@@ -30,7 +30,7 @@ public class AulaController {
     private final String LOAD_TURMAS = "listaTurmas";
 
     @Autowired
-    public AulaController(AulaRepository aulaRepository, ProfessorRepository professorRepository,
+    public AulaController(AulaRepository aulaRepository, UsuarioRepository professorRepository,
                           MateriaRepository materiaRepository, TurmaRepository turmaRepository, AtividadeRepository atividadeRepository) {
         this.aulaRepository = aulaRepository;
         this.professorRepository = professorRepository;

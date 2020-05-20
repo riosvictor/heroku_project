@@ -6,23 +6,24 @@ public class Mensagem implements Serializable {
     public enum Funcao {
         ALTERAR,
         REMOVER,
-        ADICIONAR
+        ADICIONAR,
+        LOGIN
     }
 
     private static Mensagem instance;
-    public boolean sucess;
+    public boolean success;
     public Funcao function;
 
-    private Mensagem(boolean sucess, Funcao function) {
-        this.sucess = sucess;
+    private Mensagem(boolean success, Funcao function) {
+        this.success = success;
         this.function = function;
     }
 
-    public static Mensagem getInstance(boolean sucess, Funcao function) {
+    public static Mensagem getInstance(boolean success, Funcao function) {
         if (instance == null) {
-            instance = new Mensagem(sucess, function);
+            instance = new Mensagem(success, function);
         }else{
-            instance.sucess = sucess;
+            instance.success = success;
             instance.function = function;
         }
 
@@ -32,20 +33,24 @@ public class Mensagem implements Serializable {
     public String show(){
         String result = "";
 
-        if (sucess){
+        if (success){
             if (function == Funcao.ADICIONAR)
                 result = "Adicionado com Sucesso!";
             else if (function == Funcao.ALTERAR)
                 result = "Alterado com Sucesso!";
-            else
+            else if (function == Funcao.REMOVER)
                 result = "Removido com Sucesso!";
+            else if (function == Funcao.LOGIN)
+                result = "Login realizado com Sucesso!";
         }else{
             if (function == Funcao.ADICIONAR)
                 result = "Erro ao Adicionar.";
             else if (function == Funcao.ALTERAR)
                 result = "Erro ao Alterar.";
-            else
+            else if (function == Funcao.REMOVER)
                 result = "Erro ao Remover.";
+            else if (function == Funcao.LOGIN)
+                result = "Erro ao realizar o Login.";
         }
 
         return result;
