@@ -12,7 +12,7 @@ import javax.mail.MessagingException;
 import java.io.IOException;
 import java.util.List;
 
-@Service("EmailService")
+@Component
 public class EmailServiceImpl implements EmailService {
 
     @Autowired
