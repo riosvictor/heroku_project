@@ -599,6 +599,14 @@ p {
        3.HEADER css 
 ===========================*/
 /*===== NAVBAR EIGHT =====*/
+.navbar-brand {
+    align-items: center;
+    align-content: center;
+    display: flex !important;
+    flex-direction: column;
+    color: white;
+}
+
 .navbar-area {
   background: -webkit-linear-gradient(left, #43cae9 0%, #38f9d7 100%);
   background: -o-linear-gradient(left, #43cae9 0%, #38f9d7 100%);
