@@ -25,7 +25,6 @@
                             <caption>Aulas cadastradas</caption>
                             <thead class="thead-light">
                             <tr>
-                                <th scope="col">Código</th>
                                 <th scope="col">Data de Realização</th>
                                 <th scope="col">Professor</th>
                                 <th scope="col">Matéria</th>
@@ -38,7 +37,6 @@
                             </thead>
                             <tbody>
                             <tr th:each="aula : ${aulas}">
-                                <td th:text="${aula.id}"></td>
                                 <td th:text="${#dates.format(aula.data, 'dd/MM/yyyy')}"></td>
                                 <td th:text="${aula.professor.nome}"></td>
                                 <td th:text="${aula.materia.descricao}" style="width:80%;"></td>

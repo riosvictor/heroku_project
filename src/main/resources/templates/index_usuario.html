@@ -34,7 +34,6 @@
                                     <caption th:if="${session.usuario.tipo == 'admin'}">Usuários cadastrados</caption>
                                     <thead class="thead-light">
                                     <tr>
-                                        <th scope="col">Código</th>
                                         <th scope="col">Nome</th>
                                         <th scope="col">E-mail</th>
                                         <th scope="col">Tipo</th>
@@ -46,7 +45,6 @@
                                     </thead>
                                     <tbody>
                                     <tr th:each="usuario : ${usuarios}">
-                                        <td th:text="${usuario.id}"></td>
                                         <td th:text="${usuario.nome}" style="width:80%;"></td>
                                         <td th:text="${usuario.email}" style="width:80%;"></td>
                                         <td>

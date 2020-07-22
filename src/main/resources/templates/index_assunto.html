@@ -26,7 +26,6 @@
                                     <caption>Assuntos cadastrados</caption>
                                     <thead class="thead-light">
                                     <tr>
-                                        <th scope="col">Código</th>
                                         <th scope="col">Descrição</th>
                                         <th scope="col">Alterar</th>
                                         <th scope="col">Remover</th>
@@ -34,7 +33,6 @@
                                     </thead>
                                     <tbody>
                                     <tr th:each="assunto : ${assuntos}">
-                                        <td th:text="${assunto.id}"></td>
                                         <td th:text="${assunto.descricao}" style="width:80%;"></td>
                                         <td><a th:href="@{/editassunto/{id}(id=${assunto.id})}" class="btn btn-primary"><em class="fas fa-user-edit ml-2"></em></a></td>
                                         <td><a th:href="@{/deleteassunto/{id}(id=${assunto.id})}" class="btn btn-primary"><em class="fas fa-user-times ml-2"></em></a></td>

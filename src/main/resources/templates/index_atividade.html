@@ -26,7 +26,6 @@
                             <caption>Atividades cadastradas</caption>
                             <thead class="thead-light">
                             <tr>
-                                <th scope="col">Código</th>
                                 <th scope="col">Descrição</th>
                                 <th scope="col">Grau</th>
                                 <th scope="col">URL</th>
@@ -36,7 +35,6 @@
                             </thead>
                             <tbody>
                             <tr th:each="atividade : ${atividades}">
-                                <td th:text="${atividade.id}"></td>
                                 <td th:text="${atividade.descricao}" style="width:80%;"></td>
                                 <td>
                                     <span th:if="${atividade.grau == 1}">Pré-Escolar</span>

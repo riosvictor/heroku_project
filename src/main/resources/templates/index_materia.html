@@ -26,7 +26,6 @@
                             <caption>Matérias cadastradas</caption>
                             <thead class="thead-light">
                             <tr>
-                                <th scope="col">Código</th>
                                 <th scope="col">Assunto</th>
                                 <th scope="col">Descrição</th>
                                 <th scope="col">Grau</th>
@@ -38,7 +37,6 @@
                             </thead>
                             <tbody>
                             <tr th:each="materia : ${materias}">
-                                <td th:text="${materia.id}"></td>
                                 <td style="width:80%;">
                                     <div th:each="assunto : ${materia.assuntos}">
                                         <p th:text="${assunto.descricao}"/>
