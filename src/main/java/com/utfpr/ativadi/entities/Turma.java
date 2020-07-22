@@ -6,6 +6,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 
 @Entity
@@ -13,12 +15,15 @@ import java.io.Serializable;
 public class Turma implements Serializable {
 
     @Id
-    @GeneratedValue(generator = "increment")
-    @GenericGenerator(name = "increment", strategy = "increment")
     private long id;
 
+    @NotBlank(message = "A Descrição é um campo obrigatório")
     private String descricao;
+
+    @NotNull(message = "O Grau Escolar é um campo obrigatório")
     private int grau;
+
+    @NotNull(message = "O Turno é um campo obrigatório")
     private int turno;
 
     public Turma(){}

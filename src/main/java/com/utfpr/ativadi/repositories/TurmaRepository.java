@@ -15,4 +15,7 @@ public interface TurmaRepository extends CrudRepository<Turma, Long> {
 
     @Query(value = "SELECT * FROM ativadi.turma t WHERE t.id = :id", nativeQuery = true)
     public Optional<Turma> findById(@Param("id") Long id);
+
+    @Query(value = "SELECT COALESCE(MAX(id), 0) + 1 FROM ativadi.turma", nativeQuery = true)
+    public long getNewID();
 }
