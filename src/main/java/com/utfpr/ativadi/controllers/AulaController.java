@@ -41,14 +41,20 @@ public class AulaController {
 
     @GetMapping("/aula")
     public String init(Model model) {
+        if (!SessionController.freeAccess())
+            return SessionController.LOGIN;
+
         model.addAttribute(TODAS_ATIVIDADES, aulaRepository.findAll());
         return INICIO;
     }
 
     @GetMapping("/newaula")
     public String abrirNovo(AulaConcrete aula, Model model) {
+        if (!SessionController.freeAccess())
+            return SessionController.LOGIN;
+
         model.addAttribute("aula", aula);
-        model.addAttribute(LOAD_PROFESSORES, professorRepository.findAll());
+        model.addAttribute(LOAD_PROFESSORES, professorRepository.findProfessorAll());
         model.addAttribute(LOAD_MATERIAS, materiaRepository.findAll());
         model.addAttribute(LOAD_TURMAS, turmaRepository.findAll());
         model.addAttribute(LOAD_ATIVIDADES, atividadeRepository.findAll());
@@ -58,9 +64,12 @@ public class AulaController {
 
     @PostMapping("/addaula")
     public String addAula(@Valid AulaConcrete aula, BindingResult result, Model model) {
+        if (!SessionController.freeAccess())
+            return SessionController.LOGIN;
+
         if (result.hasErrors()) {
             model.addAttribute("aula", aula);
-            model.addAttribute(LOAD_PROFESSORES, professorRepository.findAll());
+            model.addAttribute(LOAD_PROFESSORES, professorRepository.findProfessorAll());
             model.addAttribute(LOAD_MATERIAS, materiaRepository.findAll());
             model.addAttribute(LOAD_TURMAS, turmaRepository.findAll());
             model.addAttribute(LOAD_ATIVIDADES, atividadeRepository.findAll());
@@ -78,9 +87,12 @@ public class AulaController {
 
     @GetMapping("/editaula/{id}")
     public String abrirAtualizar(@PathVariable("id") long id, Model model) {
+        if (!SessionController.freeAccess())
+            return SessionController.LOGIN;
+
         AulaConcrete aula = aulaRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Id da Matéria inválido:" + id));
         model.addAttribute("aula", aula);
-        model.addAttribute(LOAD_PROFESSORES, professorRepository.findAll());
+        model.addAttribute(LOAD_PROFESSORES, professorRepository.findProfessorAll());
         model.addAttribute(LOAD_MATERIAS, materiaRepository.findAll());
         model.addAttribute(LOAD_TURMAS, turmaRepository.findAll());
         model.addAttribute(LOAD_ATIVIDADES, atividadeRepository.findAll());
@@ -90,6 +102,9 @@ public class AulaController {
 
     @PostMapping("/updateaula/{id}")
     public String updateUser(@PathVariable("id") long id, @Valid AulaConcrete aula, BindingResult result, Model model) {
+        if (!SessionController.freeAccess())
+            return SessionController.LOGIN;
+
         if (result.hasErrors()) {
             aula.setId(id);
             model.addAttribute(ERROR, Mensagem.getInstance(false, Mensagem.Funcao.ALTERAR).show());
@@ -104,6 +119,9 @@ public class AulaController {
 
     @GetMapping("/deleteaula/{id}")
     public String deleteUser(@PathVariable("id") long id, Model model) {
+        if (!SessionController.freeAccess())
+            return SessionController.LOGIN;
+
         AulaConcrete aula = aulaRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Id da Matéria inválido:" + id));
         aulaRepository.delete(aula);
         model.addAttribute(TODAS_ATIVIDADES, aulaRepository.findAll());
@@ -113,6 +131,9 @@ public class AulaController {
 
     @GetMapping("/cloneaula/{id}")
     public String abrirClone(@PathVariable("id") long id, Model model) {
+        if (!SessionController.freeAccess())
+            return SessionController.LOGIN;
+
         AulaConcrete aula = aulaRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Id da Matéria inválido:" + id));
 
         AulaConcrete clone = (AulaConcrete) aula.clone();

@@ -30,17 +30,26 @@ public class AtividadeController {
 
     @GetMapping("/atividade")
     public String init(Model model) {
+        if (!SessionController.freeAccess())
+            return SessionController.LOGIN;
+
         model.addAttribute(TODAS_ATIVIDADES, atividadeRepository.findAll());
         return INICIO;
     }
 
     @GetMapping("/newatividade")
     public String abrirNovo(Atividade atividade) {
+        if (!SessionController.freeAccess())
+            return SessionController.LOGIN;
+
         return "add_atividade";
     }
 
     @PostMapping("/addatividade")
     public String addAtividade(@Valid Atividade atividade, BindingResult result, Model model) {
+        if (!SessionController.freeAccess())
+            return SessionController.LOGIN;
+
         AtividadeFactory.loadCache(atividadeRepository.findAll());
         atividade = (Atividade) AtividadeFactory.getAtividade(atividade);
 
@@ -64,6 +73,9 @@ public class AtividadeController {
 
     @GetMapping("/editatividade/{id}")
     public String abrirAtualizar(@PathVariable("id") long id, Model model) {
+        if (!SessionController.freeAccess())
+            return SessionController.LOGIN;
+
         Atividade atividade = atividadeRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Id da Atividade inválido:" + id));
         model.addAttribute("atividade", atividade);
         return "update_atividade";
@@ -71,6 +83,9 @@ public class AtividadeController {
 
     @PostMapping("/updateatividade/{id}")
     public String updateUser(@PathVariable("id") long id, @Valid Atividade atividade, BindingResult result, Model model) {
+        if (!SessionController.freeAccess())
+            return SessionController.LOGIN;
+
         if (result.hasErrors()) {
             atividade.setId(id);
             model.addAttribute(ERROR, Mensagem.getInstance(false, Mensagem.Funcao.ALTERAR).show());
@@ -85,6 +100,9 @@ public class AtividadeController {
 
     @GetMapping("/deleteatividade/{id}")
     public String deleteUser(@PathVariable("id") long id, Model model) {
+        if (!SessionController.freeAccess())
+            return SessionController.LOGIN;
+
         Atividade atividade = atividadeRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Id da Atividade inválido:" + id));
 
         try {

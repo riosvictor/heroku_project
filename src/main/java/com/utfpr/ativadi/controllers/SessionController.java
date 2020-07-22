@@ -11,12 +11,15 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.script.Bindings;
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.util.Arrays;
 import java.util.Optional;
 
@@ -31,11 +34,11 @@ criar uma tela não autorizado
 
 @Controller
 public class SessionController {
+    public static String LOGIN = "login";
+    private static String USUARIO = "usuario";
     private final UsuarioRepository usuarioRepository;
-    private final String USUARIO = "usuario";
     private final String ERROR = "errorMessage";
     private final String SUCESS = "sucessMessage";
-    private final String LOGIN = "login";
     private final String INICIO = "index";
     private final String REGISTER = "registration";
     private final String RECOVER_PASSWORD = "recover_password";
@@ -50,11 +53,20 @@ public class SessionController {
         logger.warn("Entrou em Session Controller");
     }
 
+    private static HttpSession getSession() {
+        ServletRequestAttributes attr = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
+        return attr.getRequest().getSession();
+    }
+
+    public static boolean freeAccess(){
+        Usuario user = (Usuario) getSession().getAttribute(USUARIO);
+
+        return user == null ? false : true;
+    }
+
     @GetMapping("/")
     public String inicio(Model model, HttpServletRequest request) {
-        Usuario user = (Usuario) request.getSession().getAttribute(USUARIO);
-
-        return user == null ? LOGIN : INICIO;
+        return freeAccess() ? INICIO : LOGIN;
     }
 
     @PostMapping("/dologin")
@@ -62,7 +74,7 @@ public class SessionController {
         Optional<Usuario> usuario = usuarioRepository.findByEmailSenha(email, senha);
 
         if(usuario.isPresent()){
-            request.getSession().setAttribute(USUARIO, usuario.get());
+            getSession().setAttribute(USUARIO, usuario.get());
             return INICIO;
         }else{
             model.addAttribute("email", email);
@@ -101,7 +113,7 @@ public class SessionController {
 
     @GetMapping("/logout")
     public String destroySession(HttpServletRequest request) {
-        request.getSession().setAttribute(USUARIO, null);
+        getSession().setAttribute(USUARIO, null);
 
         return LOGIN;
     }

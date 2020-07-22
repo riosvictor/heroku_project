@@ -27,6 +27,9 @@ public class AssuntoController {
 
     @GetMapping("/assunto")
     public String init(Model model) {
+        if (!SessionController.freeAccess())
+            return SessionController.LOGIN;
+
         model.addAttribute(TODOS_ASSUNTOS, assuntoRepository.findAll());
 
         return INICIO;
@@ -34,11 +37,17 @@ public class AssuntoController {
 
     @GetMapping("/newassunto")
     public String abrirNovo(Assunto assunto) {
+        if (!SessionController.freeAccess())
+            return SessionController.LOGIN;
+
         return "add_assunto";
     }
 
     @PostMapping("/addassunto")
     public String addAssunto(@Valid Assunto assunto, BindingResult result, Model model) {
+        if (!SessionController.freeAccess())
+            return SessionController.LOGIN;
+
         if (result.hasErrors()) {
             model.addAttribute(ERROR, Mensagem.getInstance(false, Mensagem.Funcao.ADICIONAR).show());
             return "add_assunto";
@@ -53,6 +62,9 @@ public class AssuntoController {
 
     @GetMapping("/editassunto/{id}")
     public String abrirAtualizar(@PathVariable("id") long id, Model model) {
+        if (!SessionController.freeAccess())
+            return SessionController.LOGIN;
+
         Assunto assunto = assuntoRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Id do Assunto inválido:" + id));
         model.addAttribute("assunto", assunto);
         return "update_assunto";
@@ -60,6 +72,9 @@ public class AssuntoController {
 
     @PostMapping("/updateassunto/{id}")
     public String updateUser(@PathVariable("id") long id, @Valid Assunto assunto, BindingResult result, Model model) {
+        if (!SessionController.freeAccess())
+            return SessionController.LOGIN;
+
         if (result.hasErrors()) {
             assunto.setId(id);
             model.addAttribute(ERROR, Mensagem.getInstance(false, Mensagem.Funcao.ALTERAR).show());
@@ -74,6 +89,9 @@ public class AssuntoController {
 
     @GetMapping("/deleteassunto/{id}")
     public String deleteUser(@PathVariable("id") long id, Model model) {
+        if (!SessionController.freeAccess())
+            return SessionController.LOGIN;
+
         Assunto assunto = assuntoRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Id do Assunto inválido:" + id));
         try {
             assuntoRepository.delete(assunto);

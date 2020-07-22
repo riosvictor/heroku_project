@@ -32,6 +32,9 @@ public class UsuarioController {
 
     @GetMapping("/usuario")
     public String init(Model model, HttpServletRequest request) {
+        if (!SessionController.freeAccess())
+            return SessionController.LOGIN;
+
         this.user = (Usuario) request.getSession().getAttribute(USUARIO);
 
         if (user.getTipo().equals("admin"))
@@ -44,11 +47,17 @@ public class UsuarioController {
 
     @GetMapping("/newusuario")
     public String abrirNovo(Usuario usuario) {
+        if (!SessionController.freeAccess())
+            return SessionController.LOGIN;
+
         return "add_usuario";
     }
 
     @PostMapping("/addusuario")
     public String addUsuario(@Valid Usuario usuario, BindingResult result, Model model) {
+        if (!SessionController.freeAccess())
+            return SessionController.LOGIN;
+
         if (result.hasErrors()) {
             model.addAttribute(ERROR, Mensagem.getInstance(false, Mensagem.Funcao.ADICIONAR).show());
             return "add_usuario";
@@ -68,6 +77,9 @@ public class UsuarioController {
 
     @GetMapping("/editusuario/{id}")
     public String abrirAtualizar(@PathVariable("id") long id, Model model) {
+        if (!SessionController.freeAccess())
+            return SessionController.LOGIN;
+
         Usuario usuario = usuarioRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Id do Usuario inválido:" + id));
         model.addAttribute("usuario", usuario);
         return "update_usuario";
@@ -75,6 +87,9 @@ public class UsuarioController {
 
     @PostMapping("/updateusuario/{id}")
     public String updateUser(@PathVariable("id") long id, @Valid Usuario usuario, BindingResult result, Model model) {
+        if (!SessionController.freeAccess())
+            return SessionController.LOGIN;
+
         if (result.hasErrors()) {
             usuario.setId(id);
             model.addAttribute(ERROR, Mensagem.getInstance(false, Mensagem.Funcao.ALTERAR).show());
@@ -89,6 +104,9 @@ public class UsuarioController {
 
     @GetMapping("/deleteusuario/{id}")
     public String deleteUser(@PathVariable("id") long id, Model model) {
+        if (!SessionController.freeAccess())
+            return SessionController.LOGIN;
+
         Usuario usuario = usuarioRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Id do Usuario inválido:" + id));
         try {
             usuarioRepository.delete(usuario);

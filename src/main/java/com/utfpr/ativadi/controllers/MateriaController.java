@@ -31,18 +31,27 @@ public class MateriaController {
 
     @GetMapping("/materia")
     public String init(Model model) {
+        if (!SessionController.freeAccess())
+            return SessionController.LOGIN;
+
         model.addAttribute(TODAS_MATERIAS, materiaRepository.findAll());
         return INICIO;
     }
 
     @GetMapping("/newmateria")
     public String abrirNovo(Materia materia, Model model) {
+        if (!SessionController.freeAccess())
+            return SessionController.LOGIN;
+
         model.addAttribute(LOAD_ASSUNTOS, assuntoRepository.findAll());
         return "add_materia";
     }
 
     @PostMapping("/addmateria")
     public String addMateria(@Valid Materia materia, BindingResult result, Model model) {
+        if (!SessionController.freeAccess())
+            return SessionController.LOGIN;
+
         if (result.hasErrors()) {
             model.addAttribute(LOAD_ASSUNTOS, assuntoRepository.findAll());
             model.addAttribute(ERROR, Mensagem.getInstance(false, Mensagem.Funcao.ADICIONAR).show());
@@ -58,6 +67,9 @@ public class MateriaController {
 
     @GetMapping("/editmateria/{id}")
     public String abrirAtualizar(@PathVariable("id") long id, Model model) {
+        if (!SessionController.freeAccess())
+            return SessionController.LOGIN;
+
         Materia materia = materiaRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Id da Matéria inválido:" + id));
         model.addAttribute("materia", materia);
         model.addAttribute(LOAD_ASSUNTOS, assuntoRepository.findAll());
@@ -66,6 +78,9 @@ public class MateriaController {
 
     @PostMapping("/updatemateria/{id}")
     public String updateUser(@PathVariable("id") long id, @Valid Materia materia, BindingResult result, Model model) {
+        if (!SessionController.freeAccess())
+            return SessionController.LOGIN;
+
         if (result.hasErrors()) {
             materia.setId(id);
             model.addAttribute(ERROR, Mensagem.getInstance(false, Mensagem.Funcao.ALTERAR).show());
@@ -80,6 +95,9 @@ public class MateriaController {
 
     @GetMapping("/deletemateria/{id}")
     public String deleteUser(@PathVariable("id") long id, Model model) {
+        if (!SessionController.freeAccess())
+            return SessionController.LOGIN;
+
         Materia materia = materiaRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Id da Matéria inválido:" + id));
 
         try {
