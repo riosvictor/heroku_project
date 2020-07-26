@@ -4,8 +4,6 @@ import com.utfpr.ativadi.entities.Atividade;
 import com.utfpr.ativadi.entities.AtividadeFactory;
 import com.utfpr.ativadi.entities.Mensagem;
 import com.utfpr.ativadi.repositories.AtividadeRepository;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -18,14 +16,16 @@ import javax.validation.Valid;
 @Controller
 public class AtividadeController {
     private final AtividadeRepository atividadeRepository;
+    private final AuditoriaController auditoria;
     private final String ERROR = "errorMessage";
     private final String SUCESS = "sucessMessage";
     private final String INICIO = "index_atividade";
     private final String TODAS_ATIVIDADES = "atividades";
 
     @Autowired
-    public AtividadeController(AtividadeRepository atividadeRepository) {
+    public AtividadeController(AtividadeRepository atividadeRepository, AuditoriaController auditoria) {
         this.atividadeRepository = atividadeRepository;
+        this.auditoria = auditoria;
     }
 
     @GetMapping("/atividade")
@@ -58,11 +58,13 @@ public class AtividadeController {
             return "add_atividade";
         }
 
-        if (atividade.getId() > 0)
-            model.addAttribute(SUCESS, "Atividade compartilhada com Sucesso!");
-        else {
+        if (atividade.getId() > 0) {
+            model.addAttribute(SUCESS, Mensagem.getInstance(true, Mensagem.Funcao.SHARE).show());
+            auditoria.addAuditoria(Mensagem.getInstance(true, Mensagem.Funcao.SHARE).show(), this.getClass().getSimpleName());
+        }else {
             model.addAttribute(SUCESS, Mensagem.getInstance(true, Mensagem.Funcao.ADICIONAR).show());
             atividade.setId(atividadeRepository.getNewID());
+            auditoria.addAuditoria(Mensagem.getInstance(true, Mensagem.Funcao.ADICIONAR).show(), this.getClass().getSimpleName());
         }
 
         atividadeRepository.save(atividade);
@@ -95,6 +97,7 @@ public class AtividadeController {
         atividadeRepository.save(atividade);
         model.addAttribute(TODAS_ATIVIDADES, atividadeRepository.findAll());
         model.addAttribute(SUCESS, Mensagem.getInstance(true, Mensagem.Funcao.ALTERAR).show());
+        auditoria.addAuditoria(Mensagem.getInstance(true, Mensagem.Funcao.ALTERAR).show(), this.getClass().getSimpleName());
         return INICIO;
     }
 
@@ -108,6 +111,7 @@ public class AtividadeController {
         try {
             atividadeRepository.delete(atividade);
             model.addAttribute(SUCESS, Mensagem.getInstance(true, Mensagem.Funcao.REMOVER).show());
+            auditoria.addAuditoria(Mensagem.getInstance(true, Mensagem.Funcao.REMOVER).show(), this.getClass().getSimpleName());
         } catch (Exception e) {
             model.addAttribute(ERROR, "Este registro não pode ser removido, pois possui vínculo com uma Aula.");
         }

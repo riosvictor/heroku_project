@@ -17,6 +17,7 @@ import javax.validation.Valid;
 public class MateriaController {
     private final MateriaRepository materiaRepository;
     private final AssuntoRepository assuntoRepository;
+    private final AuditoriaController auditoria;
     private final String ERROR = "errorMessage";
     private final String SUCESS = "sucessMessage";
     private final String INICIO = "index_materia";
@@ -24,9 +25,10 @@ public class MateriaController {
     private final String LOAD_ASSUNTOS = "listaAssuntos";
 
     @Autowired
-    public MateriaController(MateriaRepository materiaRepository, AssuntoRepository assuntoRepository) {
+    public MateriaController(MateriaRepository materiaRepository, AssuntoRepository assuntoRepository, AuditoriaController auditoria) {
         this.materiaRepository = materiaRepository;
         this.assuntoRepository = assuntoRepository;
+        this.auditoria = auditoria;
     }
 
     @GetMapping("/materia")
@@ -62,6 +64,7 @@ public class MateriaController {
         materiaRepository.save(materia);
         model.addAttribute(TODAS_MATERIAS, materiaRepository.findAll());
         model.addAttribute(SUCESS, Mensagem.getInstance(true, Mensagem.Funcao.ADICIONAR).show());
+        auditoria.addAuditoria(Mensagem.getInstance(true, Mensagem.Funcao.ADICIONAR).show(), this.getClass().getSimpleName());
         return INICIO;
     }
 
@@ -90,6 +93,7 @@ public class MateriaController {
         materiaRepository.save(materia);
         model.addAttribute(TODAS_MATERIAS, materiaRepository.findAll());
         model.addAttribute(SUCESS, Mensagem.getInstance(true, Mensagem.Funcao.ALTERAR).show());
+        auditoria.addAuditoria(Mensagem.getInstance(true, Mensagem.Funcao.ALTERAR).show(), this.getClass().getSimpleName());
         return INICIO;
     }
 
@@ -103,6 +107,7 @@ public class MateriaController {
         try {
             materiaRepository.delete(materia);
             model.addAttribute(SUCESS, Mensagem.getInstance(true, Mensagem.Funcao.REMOVER).show());
+            auditoria.addAuditoria(Mensagem.getInstance(true, Mensagem.Funcao.REMOVER).show(), this.getClass().getSimpleName());
         } catch (Exception e) {
             model.addAttribute(ERROR, "Este registro não pode ser removido, pois possui vínculo com uma Aula.");
         }

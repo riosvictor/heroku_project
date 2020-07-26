@@ -7,7 +7,10 @@ public class Mensagem implements Serializable {
         ALTERAR,
         REMOVER,
         ADICIONAR,
-        LOGIN
+        LOGIN,
+        LOGOUT,
+        SHARE,
+        CLONE
     }
 
     private static Mensagem instance;
@@ -42,6 +45,12 @@ public class Mensagem implements Serializable {
                 result = "Removido com Sucesso!";
             else if (function == Funcao.LOGIN)
                 result = "Login realizado com Sucesso!";
+            else if (function == Funcao.LOGOUT)
+                result = "Logout realizado com Sucesso!";
+            else if (function == Funcao.SHARE)
+                result = "Compartilhado com Sucesso!";
+            else if (function == Funcao.CLONE)
+                result = "Copiado com Sucesso!";
         }else{
             if (function == Funcao.ADICIONAR)
                 result = "Erro ao Adicionar.";

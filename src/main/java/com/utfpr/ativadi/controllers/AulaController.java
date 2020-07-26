@@ -20,6 +20,7 @@ public class AulaController {
     private final MateriaRepository materiaRepository;
     private final TurmaRepository turmaRepository;
     private final AtividadeRepository atividadeRepository;
+    private final AuditoriaController auditoria;
     private final String ERROR = "errorMessage";
     private final String SUCESS = "sucessMessage";
     private final String INICIO = "index_aula";
@@ -31,12 +32,14 @@ public class AulaController {
 
     @Autowired
     public AulaController(AulaRepository aulaRepository, UsuarioRepository professorRepository,
-                          MateriaRepository materiaRepository, TurmaRepository turmaRepository, AtividadeRepository atividadeRepository) {
+                          MateriaRepository materiaRepository, TurmaRepository turmaRepository,
+                          AtividadeRepository atividadeRepository, AuditoriaController auditoria) {
         this.aulaRepository = aulaRepository;
         this.professorRepository = professorRepository;
         this.materiaRepository = materiaRepository;
         this.turmaRepository = turmaRepository;
         this.atividadeRepository = atividadeRepository;
+        this.auditoria = auditoria;
     }
 
     @GetMapping("/aula")
@@ -82,6 +85,8 @@ public class AulaController {
         aulaRepository.save(aula);
         model.addAttribute(TODAS_ATIVIDADES, aulaRepository.findAll());
         model.addAttribute(SUCESS, Mensagem.getInstance(true, Mensagem.Funcao.ADICIONAR).show());
+        auditoria.addAuditoria(Mensagem.getInstance(true, Mensagem.Funcao.ADICIONAR).show(), this.getClass().getSimpleName());
+
         return INICIO;
     }
 
@@ -114,6 +119,8 @@ public class AulaController {
         aulaRepository.save(aula);
         model.addAttribute(TODAS_ATIVIDADES, aulaRepository.findAll());
         model.addAttribute(SUCESS, Mensagem.getInstance(true, Mensagem.Funcao.ALTERAR).show());
+        auditoria.addAuditoria(Mensagem.getInstance(true, Mensagem.Funcao.ALTERAR).show(), this.getClass().getSimpleName());
+
         return INICIO;
     }
 
@@ -126,6 +133,7 @@ public class AulaController {
         aulaRepository.delete(aula);
         model.addAttribute(TODAS_ATIVIDADES, aulaRepository.findAll());
         model.addAttribute(SUCESS, Mensagem.getInstance(true, Mensagem.Funcao.REMOVER).show());
+        auditoria.addAuditoria(Mensagem.getInstance(true, Mensagem.Funcao.REMOVER).show(), this.getClass().getSimpleName());
         return INICIO;
     }
 
@@ -141,6 +149,8 @@ public class AulaController {
         aulaRepository.save(clone);
 
         model.addAttribute(TODAS_ATIVIDADES, aulaRepository.findAll());
+        model.addAttribute(SUCESS, Mensagem.getInstance(true, Mensagem.Funcao.CLONE).show());
+        auditoria.addAuditoria(Mensagem.getInstance(true, Mensagem.Funcao.CLONE).show(), this.getClass().getSimpleName());
 
         return INICIO;
     }

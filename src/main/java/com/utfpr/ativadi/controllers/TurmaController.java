@@ -2,7 +2,6 @@ package com.utfpr.ativadi.controllers;
 
 import com.utfpr.ativadi.entities.Turma;
 import com.utfpr.ativadi.entities.Mensagem;
-import com.utfpr.ativadi.repositories.AssuntoRepository;
 import com.utfpr.ativadi.repositories.TurmaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -17,14 +16,16 @@ import javax.validation.Valid;
 @Controller
 public class TurmaController {
     private final TurmaRepository turmaRepository;
+    private final AuditoriaController auditoria;
     private final String ERROR = "errorMessage";
     private final String SUCESS = "sucessMessage";
     private final String INICIO = "index_turma";
     private final String TODAS_TURMAS = "turmas";
 
     @Autowired
-    public TurmaController(TurmaRepository turmaRepository) {
+    public TurmaController(TurmaRepository turmaRepository, AuditoriaController auditoria) {
         this.turmaRepository = turmaRepository;
+        this.auditoria = auditoria;
     }
 
     @GetMapping("/turma")
@@ -58,6 +59,7 @@ public class TurmaController {
         turmaRepository.save(turma);
         model.addAttribute(TODAS_TURMAS, turmaRepository.findAll());
         model.addAttribute(SUCESS, Mensagem.getInstance(true, Mensagem.Funcao.ADICIONAR).show());
+        auditoria.addAuditoria(Mensagem.getInstance(true, Mensagem.Funcao.ADICIONAR).show(),  this.getClass().getSimpleName());
         return INICIO;
     }
 
@@ -85,6 +87,7 @@ public class TurmaController {
         turmaRepository.save(turma);
         model.addAttribute(TODAS_TURMAS, turmaRepository.findAll());
         model.addAttribute(SUCESS, Mensagem.getInstance(true, Mensagem.Funcao.ALTERAR).show());
+        auditoria.addAuditoria(Mensagem.getInstance(true, Mensagem.Funcao.ALTERAR).show(),  this.getClass().getSimpleName());
         return INICIO;
     }
 
@@ -98,6 +101,7 @@ public class TurmaController {
         try {
             turmaRepository.delete(turma);
             model.addAttribute(SUCESS, Mensagem.getInstance(true, Mensagem.Funcao.REMOVER).show());
+            auditoria.addAuditoria(Mensagem.getInstance(true, Mensagem.Funcao.REMOVER).show(),  this.getClass().getSimpleName());
         } catch (Exception e) {
             model.addAttribute(ERROR, "Este registro não pode ser removido, pois possui vínculo com uma Aula.");
         }

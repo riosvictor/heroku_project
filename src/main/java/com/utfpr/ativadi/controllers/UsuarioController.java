@@ -10,13 +10,13 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 @Controller
 public class UsuarioController {
     private final UsuarioRepository usuarioRepository;
+    private final AuditoriaController auditoria;
     private final String ERROR = "errorMessage";
     private final String SUCESS = "sucessMessage";
     private final String INICIO = "index_usuario";
@@ -26,8 +26,9 @@ public class UsuarioController {
 
 
     @Autowired
-    public UsuarioController(UsuarioRepository usuarioRepository) {
+    public UsuarioController(UsuarioRepository usuarioRepository, AuditoriaController auditoria) {
         this.usuarioRepository = usuarioRepository;
+        this.auditoria = auditoria;
     }
 
     @GetMapping("/usuario")
@@ -72,6 +73,7 @@ public class UsuarioController {
         usuarioRepository.save(usuario);
         model.addAttribute(TODOS_USUARIO, usuarioRepository.findAll());
         model.addAttribute(SUCESS, Mensagem.getInstance(true, Mensagem.Funcao.ADICIONAR).show());
+        auditoria.addAuditoria(Mensagem.getInstance(true, Mensagem.Funcao.ADICIONAR).show(), this.getClass().getSimpleName());
         return INICIO;
     }
 
@@ -99,6 +101,7 @@ public class UsuarioController {
         usuarioRepository.save(usuario);
         model.addAttribute(TODOS_USUARIO, usuarioRepository.findAll());
         model.addAttribute(SUCESS, Mensagem.getInstance(true, Mensagem.Funcao.ALTERAR).show());
+        auditoria.addAuditoria(Mensagem.getInstance(true, Mensagem.Funcao.ALTERAR).show(), this.getClass().getSimpleName());
         return INICIO;
     }
 
@@ -111,6 +114,7 @@ public class UsuarioController {
         try {
             usuarioRepository.delete(usuario);
             model.addAttribute(SUCESS, Mensagem.getInstance(true, Mensagem.Funcao.REMOVER).show());
+            auditoria.addAuditoria(Mensagem.getInstance(true, Mensagem.Funcao.REMOVER).show(), this.getClass().getSimpleName());
         } catch (Exception e) {
             model.addAttribute(ERROR, "Este registro não pode ser removido, pois possui vínculo com uma Matéria.");
         }

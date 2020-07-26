@@ -67,9 +67,6 @@
 
                                 <div class="collapse navbar-collapse sub-menu-bar" id="navbarEight">
                                     <ul class="navbar-nav ml-auto">
-                                        <li class="nav-item">
-                                            <a class="page-scroll" href="/">ATIVA</a>
-                                        </li>
                                         <li class="nav-item" th:if="${session.usuario != null and
                                                                       session.usuario.tipo != 'aluno'}">
                                             <a class="page-scroll" href="/assunto">ASSUNTO</a>
@@ -96,6 +93,10 @@
                                         </li>
                                         <li class="nav-item" th:if="${session.usuario != null}">
                                             <a class="page-scroll" href="/usuario">Usuário</a>
+                                        </li>
+                                        <li class="nav-item" th:if="${session.usuario != null and
+                                                                      session.usuario.tipo == 'admin'}">
+                                            <a class="page-scroll" href="/auditoria">Auditoria</a>
                                         </li>
                                         <li class="nav-item">
                                             <a class="page-scroll" href="/sobre">SOBRE</a>
