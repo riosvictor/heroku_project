@@ -7,6 +7,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import java.util.Date;
+import java.util.TimeZone;
 
 
 
@@ -31,6 +32,8 @@ public class AuditoriaController {
     }
 
     public void addAuditoria(String descricao, String className) {
+        TimeZone.setDefault(TimeZone.getTimeZone("America/Sao_Paulo"));
+		        
         Auditoria auditoria = new Auditoria();
 
         auditoria.setId(auditoriaRepository.getNewID());
