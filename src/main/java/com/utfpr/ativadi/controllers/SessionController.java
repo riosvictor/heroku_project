@@ -17,6 +17,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.util.Arrays;
 import java.util.Optional;
+import java.lang.*;
 
 
 @Controller
@@ -107,6 +108,7 @@ public class SessionController {
     @GetMapping("/logout")
     public String destroySession(HttpServletRequest request) {
         auditoria.addAuditoria(Mensagem.getInstance(true, Mensagem.Funcao.LOGOUT).show(), this.getClass().getSimpleName());
+        Thread.sleep(1000);
         getSession().setAttribute(USUARIO, null);
 
         return LOGIN;
