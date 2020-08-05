@@ -108,7 +108,12 @@ public class SessionController {
     @GetMapping("/logout")
     public String destroySession(HttpServletRequest request) {
         auditoria.addAuditoria(Mensagem.getInstance(true, Mensagem.Funcao.LOGOUT).show(), this.getClass().getSimpleName());
-        Thread.sleep(1000);
+        try {
+            Thread.sleep(1000);
+        } 
+        catch(InterruptedException e) {
+             // this part is executed when an exception (in this example InterruptedException) occurs
+        }
         getSession().setAttribute(USUARIO, null);
 
         return LOGIN;
