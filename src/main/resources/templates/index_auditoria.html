@@ -34,7 +34,9 @@
                             <tr th:each="auditoria : ${auditorias}">
                                 <td th:text="${auditoria.descricao}" style="width:80%;"></td>
                                 <td th:text="${#dates.format(auditoria.data, 'dd/MM/yyyy HH:mm:ss')}"></td>
-                                <td th:text="${auditoria.usuario.nome}" style="width:80%;"></td>
+                                <td th:text="${auditoria.usuario.nome}" style="width:80%;"
+                                    th:text="${auditoria.usuario.nome} ?
+                                        ${auditoria.usuario.nome} : ''"></td>
                             </tr>
                             </tbody>
                         </table>
