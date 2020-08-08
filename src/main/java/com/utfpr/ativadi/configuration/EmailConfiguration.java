@@ -19,9 +19,6 @@ public class EmailConfiguration {
         mailSender.setHost("smtp.gmail.com");
         mailSender.setPort(587);
 
-        mailSender.setUsername("ativasistema.edu@gmail.com");
-        mailSender.setPassword("ativautfpr@2020");
-
         Properties props = mailSender.getJavaMailProperties();
         props.put("mail.transport.protocol", "smtp");
         props.put("mail.smtp.starttls.enable", true);
