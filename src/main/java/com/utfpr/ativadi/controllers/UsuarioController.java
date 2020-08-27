@@ -116,7 +116,7 @@ public class UsuarioController {
             model.addAttribute(SUCESS, Mensagem.getInstance(true, Mensagem.Funcao.REMOVER).show());
             auditoria.addAuditoria(Mensagem.getInstance(true, Mensagem.Funcao.REMOVER).show(), this.getClass().getSimpleName());
         } catch (Exception e) {
-            model.addAttribute(ERROR, "Este registro não pode ser removido, pois possui vínculo com uma Matéria.");
+            model.addAttribute(ERROR, "Este registro não pode ser removido, pois possui vínculo com Auditoria.");
         }
 
         model.addAttribute(TODOS_USUARIO, usuarioRepository.findAll());
