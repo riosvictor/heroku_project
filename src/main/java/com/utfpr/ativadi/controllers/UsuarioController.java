@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import java.util.Optional;
 
 @Controller
 public class UsuarioController {
@@ -24,6 +25,7 @@ public class UsuarioController {
     private final String USUARIO = "usuario";
     private Usuario user;
 
+    public final String ADMIN = "admin";
 
     @Autowired
     public UsuarioController(UsuarioRepository usuarioRepository, AuditoriaController auditoria) {
@@ -69,6 +71,17 @@ public class UsuarioController {
             return "add_usuario";
         }
 
+        if (usuario.getTipo() != ADMIN) {
+            if (usuario.getGrau() <= 0) {
+                model.addAttribute(ERROR, "O Campo Grau é obrigatório!");
+                return "add_usuario";
+            }
+            if (usuario.getTurno() <= 0) {
+                model.addAttribute(ERROR, "O Campo Turno é obrigatório!");
+                return "add_usuario";
+            }
+        }
+
         usuario.setId(usuarioRepository.getNewID());
         usuarioRepository.save(usuario);
         model.addAttribute(TODOS_USUARIO, usuarioRepository.findAll());
@@ -96,6 +109,23 @@ public class UsuarioController {
             usuario.setId(id);
             model.addAttribute(ERROR, Mensagem.getInstance(false, Mensagem.Funcao.ALTERAR).show());
             return "update_usuario";
+        }
+
+        Optional<Usuario> user_email = usuarioRepository.findByEmail(usuario.getEmail());
+        if (user_email.isPresent() && user_email.get().getId() != usuario.getId()){
+            model.addAttribute(ERROR, "Este e-mail já foi cadastrado!");
+            return "update_usuario";
+        }
+
+        if (usuario.getTipo() != ADMIN) {
+            if (usuario.getGrau() <= 0) {
+                model.addAttribute(ERROR, "O Campo Grau é obrigatório!");
+                return "update_usuario";
+            }
+            if (usuario.getTurno() <= 0) {
+                model.addAttribute(ERROR, "O Campo Turno é obrigatório!");
+                return "update_usuario";
+            }
         }
 
         usuarioRepository.save(usuario);

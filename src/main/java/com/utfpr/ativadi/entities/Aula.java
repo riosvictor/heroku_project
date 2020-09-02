@@ -14,6 +14,12 @@ public abstract class Aula implements Serializable {
     @Id
     private long id;
 
+    private int status;
+
+    public final int ABERTO = -1;
+    public final int FECHADO = 0;
+    public final int CONCLUIDO = 1;
+
     @NotNull(message = "A Data de Realização é um campo obrigatório")
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date data;
@@ -49,6 +55,7 @@ public abstract class Aula implements Serializable {
             this.turma = target.turma;
             this.atividade = target.atividade;
             this.data = target.data;
+            this.status = ABERTO;
         }
     }
 
@@ -92,6 +99,14 @@ public abstract class Aula implements Serializable {
         this.turma = turma;
     }
 
+    public int getStatus() {
+        return status;
+    }
+
+    public void setStatus(int status) {
+        this.status = status;
+    }
+
     public Atividade getAtividade() {
         return atividade;
     }
@@ -109,6 +124,7 @@ public abstract class Aula implements Serializable {
                 ", materia=" + materia +
                 ", turma=" + turma +
                 ", atividade=" + atividade +
+                ", status=" + status +
                 '}';
     }
 

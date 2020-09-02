@@ -31,6 +31,7 @@
                                 <th scope="col">Turno</th>
                                 <th scope="col">Alterar</th>
                                 <th scope="col">Remover</th>
+                                <th scope="col">Gerenciar</th>
                             </tr>
                             </thead>
                             <tbody>
@@ -47,6 +48,7 @@
 
                                 <td><a th:href="@{/editturma/{id}(id=${turma.id})}" class="btn btn-primary"><em class="fas fa-user-edit ml-2"></em></a></td>
                                 <td><a th:href="@{/deleteturma/{id}(id=${turma.id})}" class="btn btn-primary"><em class="fas fa-user-times ml-2"></em></a></td>
+                                <td><a th:href="@{/manageturma/{id}(id=${turma.id})}" class="btn btn-primary"><em class="fas fa-users ml-2"></em></a></td>
                             </tr>
                             </tbody>
                         </table>

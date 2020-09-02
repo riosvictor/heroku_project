@@ -18,8 +18,19 @@
                         <div class="col-md-6">
                             <form action="#" th:action="@{/addusuario}" th:object="${usuario}" method="post">
                                 <div class="form-group">
+                                    <label for="usuario-tipo" class="col-form-label">Tipo</label>
+                                    <select autofocus th:field="*{tipo}" id="usuario-tipo" class="form-control" onchange="selectTipo(this);">
+                                        <option value=""></option>
+                                        <option th:value="admin" th:text="Administrador"></option>
+                                        <option th:value="professor" th:text="Professor"></option>
+                                        <option th:value="aluno" th:text="Aluno"></option>
+                                    </select>
+                                    <span th:if="${#fields.hasErrors('tipo')}" th:errors="*{tipo}" class="text-danger"></span>
+                                    </br>
+                                </div>
+                                <div class="form-group">
                                     <label for="nome" class="col-form-label">Nome</label>
-                                    <input autofocus type="text" th:field="*{nome}" class="form-control" id="nome" placeholder="Nome">
+                                    <input type="text" th:field="*{nome}" class="form-control" id="nome" placeholder="Nome">
                                     <span th:if="${#fields.hasErrors('nome')}" th:errors="*{nome}" class="text-danger"></span>
                                 </div>
                                 <div class="form-group">
@@ -32,17 +43,7 @@
                                     <input type="password" th:field="*{senha}" class="form-control" id="senha" placeholder="Senha">
                                     <span th:if="${#fields.hasErrors('senha')}" th:errors="*{senha}" class="text-danger"></span>
                                 </div>
-                                <div class="form-group">
-                                    <label for="tipo" class="col-form-label">Tipo</label>
-                                    <select th:field="*{tipo}" id="tipo" class="form-control">
-                                        <option th:value="admin" th:text="Administrador"></option>
-                                        <option th:value="professor" th:text="Professor"></option>
-                                        <option th:value="aluno" th:text="Aluno"></option>
-                                    </select>
-                                    <span th:if="${#fields.hasErrors('tipo')}" th:errors="*{tipo}" class="text-danger"></span>
-                                    </br>
-                                </div>
-                                <div class="form-group" th:if="${tipo!='admin'}">
+                                <div class="form-group" id="usuario-grau">
                                     <label for="grau" class="col-form-label">Grau</label>
                                     <select th:field="*{grau}" id="grau" class="form-control">
                                         <option th:value="0"></option>
@@ -52,7 +53,7 @@
                                     <span th:if="${#fields.hasErrors('grau')}" th:errors="*{grau}" class="text-danger"></span>
                                     </br>
                                 </div>
-                                <div class="form-group" th:if="${tipo!='admin'}">
+                                <div class="form-group" id="usuario-turno">
                                     <label for="turno" class="col-form-label">Turno</label>
                                     <select th:field="*{turno}" id="turno" class="form-control">
                                         <option th:value="0"></option>
@@ -83,4 +84,18 @@
         <div th:insert="~{base :: common_script}">
         </div>
     </body>
+
+    <script>
+        function selectTipo(tipo) {
+            if (tipo.value != "admin") {
+                document.getElementById("usuario-turno").style.display = "block";
+                document.getElementById("usuario-grau").style.display = "block";
+            } else {
+                document.getElementById("usuario-turno").style.display = "none";
+                document.getElementById("usuario-grau").style.display = "none";
+            }
+        }
+
+        selectTipo(document.getElementById("usuario-tipo"));
+    </script>
 </html>

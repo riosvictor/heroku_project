@@ -9,6 +9,7 @@ import java.io.Serializable;
 @Table(name = "usuario", schema = "ativadi")
 public class Usuario implements Serializable {
 
+
     @Id
     private long id;
 

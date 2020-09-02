@@ -53,7 +53,7 @@
                         <div class="form-group">
                             <label for="assuntos" class="col-form-label">Assuntos</label>
                             <br />
-                            <select id="assuntos" th:field="*{assuntos}" size="10" multiple="multiple">
+                            <select id="assuntos" th:field="*{assuntos}" class="form-control" multiple="multiple" data-live-search="true">
                                 <option th:each="assunto : ${listaAssuntos}"
                                         th:value="${{assunto.id}}"
                                         th:text="${assunto.descricao}">
@@ -81,5 +81,9 @@
 
 <div th:insert="~{base :: common_script}">
 </div>
+
+<script>
+    $('select').selectpicker();
+</script>
 </body>
 </html>

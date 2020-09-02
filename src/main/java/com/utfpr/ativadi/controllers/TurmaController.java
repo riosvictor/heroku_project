@@ -2,7 +2,9 @@ package com.utfpr.ativadi.controllers;
 
 import com.utfpr.ativadi.entities.Turma;
 import com.utfpr.ativadi.entities.Mensagem;
+import com.utfpr.ativadi.entities.Usuario;
 import com.utfpr.ativadi.repositories.TurmaRepository;
+import com.utfpr.ativadi.repositories.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -12,19 +14,28 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import javax.validation.Valid;
+import java.util.*;
 
 @Controller
 public class TurmaController {
     private final TurmaRepository turmaRepository;
     private final AuditoriaController auditoria;
+    private final UsuarioRepository usuarioRepository;
     private final String ERROR = "errorMessage";
     private final String SUCESS = "sucessMessage";
     private final String INICIO = "index_turma";
     private final String TODAS_TURMAS = "turmas";
+    private final String LOAD_PROFESSORES = "listaProfessores";
+    private final String LOAD_ALUNOS = "listaAlunos";
+
+    public final String TEACHER = "professor";
+    public final String STUDENT = "aluno";
+
 
     @Autowired
-    public TurmaController(TurmaRepository turmaRepository, AuditoriaController auditoria) {
+    public TurmaController(TurmaRepository turmaRepository, UsuarioRepository usuarioRepository, AuditoriaController auditoria) {
         this.turmaRepository = turmaRepository;
+        this.usuarioRepository = usuarioRepository;
         this.auditoria = auditoria;
     }
 
@@ -43,6 +54,52 @@ public class TurmaController {
             return SessionController.LOGIN;
 
         return "add_turma";
+    }
+
+    @GetMapping("/manageturma/{id}")
+    public String abrirGerenciamento(@PathVariable("id") long id, Model model) {
+        if (!SessionController.freeAccess())
+            return SessionController.LOGIN;
+
+        Turma turma = turmaRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Id da Matéria inválido:" + id));
+
+        model.addAttribute(LOAD_PROFESSORES, usuarioRepository.findProfessorAllWhere(turma.getGrau(), turma.getTurno()));
+        model.addAttribute(LOAD_ALUNOS, usuarioRepository.findAlunoAllWhere(turma.getGrau(), turma.getTurno()));
+
+        Calendar cal = Calendar.getInstance();
+        Date today = cal.getTime();
+        cal.add(Calendar.YEAR, 1); // to get previous year add -1
+        Date nextYear = cal.getTime();
+
+        model.addAttribute("currentDate", today);
+        model.addAttribute("nextDate", nextYear);
+
+        model.addAttribute("turma", turma);
+        return "manage_turma";
+    }
+
+    @PostMapping("/salvargerenciamento")
+    public String salvarGerenciamento(Turma turma, BindingResult result, Model model) {
+        if (!SessionController.freeAccess())
+            return SessionController.LOGIN;
+
+        turmaRepository.save(turma);
+
+//        turmaRepository.deleteAllProfessores(turma.getId());
+//        turmaRepository.deleteAllAlunos(turma.getId());
+
+//        for (Usuario aluno : turma.getAlunos()) {
+//            turmaRepository.insertAluno(turma.getId(), aluno.getId());
+//        }
+
+//        for (Usuario professor : turma.getProfessores()) {
+//            turmaRepository.insertProfessor(turma.getId(), professor.getId());
+//        }
+
+        model.addAttribute(TODAS_TURMAS, turmaRepository.findAll());
+        model.addAttribute(SUCESS, Mensagem.getInstance(true, Mensagem.Funcao.ADICIONAR).show());
+        auditoria.addAuditoria(Mensagem.getInstance(true, Mensagem.Funcao.ADICIONAR).show(),  this.getClass().getSimpleName());
+        return INICIO;
     }
 
     @PostMapping("/addturma")

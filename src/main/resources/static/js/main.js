@@ -79,27 +79,27 @@ $(function() {
     
     //===== Isotope Project 3
 
-    $('.container').imagesLoaded(function () {
-        var $grid = $('.grid').isotope({
-            // options
-            transitionDuration: '1s'
-        });
-
-        // filter items on button click
-        $('.portfolio-menu ul').on('click', 'li', function () {
-            var filterValue = $(this).attr('data-filter');
-            $grid.isotope({
-                filter: filterValue
-            });
-        });
-
-        //for menu active class
-        $('.portfolio-menu ul li').on('click', function (event) {
-            $(this).siblings('.active').removeClass('active');
-            $(this).addClass('active');
-            event.preventDefault();
-        });
-    });
+//    $('.container').imagesLoaded(function () {
+//        var $grid = $('.grid').isotope({
+//            // options
+//            transitionDuration: '1s'
+//        });
+//
+//        // filter items on button click
+//        $('.portfolio-menu ul').on('click', 'li', function () {
+//            var filterValue = $(this).attr('data-filter');
+//            $grid.isotope({
+//                filter: filterValue
+//            });
+//        });
+//
+//        //for menu active class
+//        $('.portfolio-menu ul li').on('click', function (event) {
+//            $(this).siblings('.active').removeClass('active');
+//            $(this).addClass('active');
+//            event.preventDefault();
+//        });
+//    });
     
     
     //  Magnific Popup
@@ -311,7 +311,7 @@ $(function() {
     
     //===== 
     
-    
+
     
     
     

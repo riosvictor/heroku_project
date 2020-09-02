@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="pt-br">
+<head th:replace="base :: common_header(~{::title})">
+
+    <title>Gerenciar Turma</title>
+</head>
+
+<body>
+<section class="header-area">
+    <div class="navbar-area" th:insert="~{base :: common_navbar}">
+    </div>
+
+    <div id="home" class="slider-area">
+        <div class="container my-5">
+            <h2 class="mb-5">Gerenciamento da Turma</h2>
+            <div th:if="${errorMessage}" th:text="${errorMessage}" style="color:red"/>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <form action="#" th:action="@{/salvargerenciamento}" th:object="${turma}" method="post">
+                        <input type="hidden" th:field="*{id}">
+                        <input type="hidden" th:field="*{descricao}">
+                        <input type="hidden" th:field="*{grau}">
+                        <input type="hidden" th:field="*{turno}">
+
+                        <div class="form-group">
+                            <label for="ms_professores" class="col-form-label">Professores</label>
+                            <br />
+                            <select th:field="*{professores}" id="ms_professores" class="form-control" multiple="multiple" data-live-search="true">
+                                <option th:each="professor : ${listaProfessores}"
+                                        th:value="${{professor.id}}"
+                                        th:text="${professor.nome}">
+                                </option>
+                            </select>
+                            </br>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="ms_alunos" class="col-form-label">Alunos</label>
+                            <div class="d-inline p-3">
+                                <select th:field="*{alunos}" id="ms_alunos" class="form-control" multiple="multiple" data-live-search="true">
+                                    <option th:each="aluno : ${listaAlunos}"
+                                            th:value="${{aluno.id}}"
+                                            th:text="${aluno.nome}">
+                                    </option>
+                                </select>
+                            </div>
+                            </br>
+                        </div>
+                        <div class="row">
+                            <div class="d-inline p-3">
+                                <input type="submit" class="btn btn-primary" value="Confirmar">
+                                <a href="/turma" class="btn btn-primary">Voltar</a>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</section>
+
+<footer id="footer" class="footer-area" th:insert="~{base :: common_footer}">
+</footer>
+
+<div th:insert="~{base :: common_script}">
+</div>
+
+<script>
+    $('select').selectpicker();
+</script>
+</body>
+</html>
