@@ -11,11 +11,11 @@ public class AulaConcrete extends Aula implements PrototypeAula{
     }
 
     public void invalidAula() {
-        this.setStatus(this.FECHADO);
+        this.setStatus(StatusAula.FECHADO.getValue());
     }
 
     public void closeAula() {
-        this.setStatus(this.CONCLUIDO);
+        this.setStatus(StatusAula.CONCLUIDO.getValue());
     }
 
     public AulaConcrete(AulaConcrete target) {
