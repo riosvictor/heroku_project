@@ -20,6 +20,14 @@ public interface TurmaRepository extends CrudRepository<Turma, Long> {
     @Query(value = "SELECT COALESCE(MAX(id), 0) + 1 FROM ativadi.turma", nativeQuery = true)
     public long getNewID();
 
+    @Query(value = "SELECT * FROM ativadi.turma t INNER JOIN ativadi.turma_professor tp ON tp.id_turma = t.id WHERE tp.id_professor = :id", nativeQuery = true)
+    public List<Turma> findAllByProfessorId(@Param("id") Long id);
+
+    @Query(value = "SELECT * FROM ativadi.turma t INNER JOIN ativadi.turma_aluno ta ON ta.id_turma = t.id WHERE ta.id_aluno = :id LIMIT 1", nativeQuery = true)
+    public Optional<Turma> findAllByAlunoId(@Param("id") Long id);
+
+    ///
+
     @Modifying
     @Query(value = "DELETE FROM ativadi.turma_professor tp WHERE tp.id_turma = :id", nativeQuery = true)
     public void deleteAllProfessores(@Param("id") Long turmaId);

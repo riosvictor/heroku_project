@@ -2,21 +2,25 @@ package com.utfpr.ativadi.controllers;
 
 import com.utfpr.ativadi.entities.Materia;
 import com.utfpr.ativadi.entities.Mensagem;
+import com.utfpr.ativadi.entities.Turma;
 import com.utfpr.ativadi.repositories.AssuntoRepository;
 import com.utfpr.ativadi.repositories.MateriaRepository;
+import com.utfpr.ativadi.repositories.TurmaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
+
 import javax.validation.Valid;
+import java.util.ArrayList;
+import java.util.List;
 
 @Controller
 public class MateriaController {
     private final MateriaRepository materiaRepository;
     private final AssuntoRepository assuntoRepository;
+    private final TurmaRepository turmaRepository;
     private final AuditoriaController auditoria;
     private final String ERROR = "errorMessage";
     private final String SUCESS = "sucessMessage";
@@ -25,10 +29,11 @@ public class MateriaController {
     private final String LOAD_ASSUNTOS = "listaAssuntos";
 
     @Autowired
-    public MateriaController(MateriaRepository materiaRepository, AssuntoRepository assuntoRepository, AuditoriaController auditoria) {
+    public MateriaController(MateriaRepository materiaRepository, AssuntoRepository assuntoRepository, AuditoriaController auditoria, TurmaRepository turmaRepository) {
         this.materiaRepository = materiaRepository;
         this.assuntoRepository = assuntoRepository;
         this.auditoria = auditoria;
+        this.turmaRepository = turmaRepository;
     }
 
     @GetMapping("/materia")
@@ -114,5 +119,18 @@ public class MateriaController {
 
         model.addAttribute(TODAS_MATERIAS, materiaRepository.findAll());
         return INICIO;
+    }
+
+    @RequestMapping(value = "/turma_materia", method = RequestMethod.GET)
+    public @ResponseBody
+    List<Materia> findMateriasByTurma(@RequestParam(value = "turmaId", required = true) Long turmaId) {
+        Turma turma = turmaRepository.findById(turmaId).orElseThrow(() -> new IllegalArgumentException("Id da Turma inválido:" + turmaId));
+        List<Materia> m = materiaRepository.findMateriaByGrau(turma.getGrau());
+
+        for (Materia materia : m){
+            materia.setAssuntos(null);
+        }
+
+        return m;
     }
 }

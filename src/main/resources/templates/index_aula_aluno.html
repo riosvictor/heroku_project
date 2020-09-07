@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="pt-br">
+<head th:replace="base :: common_header(~{::title})">
+    <title>Atividade do Aluno</title>
+</head>
+
+<body>
+<section class="header-area">
+    <div class="navbar-area" th:insert="~{base :: common_navbar}">
+    </div>
+
+    <div id="home" class="slider-area">
+        <div th:switch="${aulas}" class="container my-5">
+            <div th:if="${sucessMessage}" th:text="${sucessMessage}" style="color:green"/>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <a href="/newaula" class="btn btn-primary btn-novo d-flex flex-row-reverse"><em class="fas fa-user-plus ml-2"></em></a>
+                    <p></p>
+
+                    <h2 th:if="${#lists.isEmpty(aulas)}">Sem registros!</h2>
+                    <div th:unless="${#lists.isEmpty(aulas)}">
+                        <h2 class="d-flex flex-row">Aulas</h2>
+                        <table class="table table-striped" style="width:100%;">
+                            <caption>Atividades cadastradas</caption>
+                            <thead class="thead-light">
+                            <tr>
+                                <th scope="col">Data de Realização</th>
+                                <th scope="col">Professor</th>
+                                <th scope="col">Matéria</th>
+                                <th scope="col">Turma</th>
+                                <th scope="col">Atividade</th>
+                                <th scope="col">Realizar</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr th:each="aula : ${aulas}">
+                                <td th:text="${#dates.format(aula.data, 'dd/MM/yyyy')}"></td>
+                                <td th:text="${aula.professor.nome}"></td>
+                                <td th:text="${aula.materia.descricao}" style="width:80%;"></td>
+                                <td th:text="${aula.turma.descricao}"></td>
+                                <td th:text="${aula.atividade.descricao}"></td>
+                                <td><a th:href="@{/realizaraula/{id}(id=${aula.id})}" class="btn btn-primary"><em class="fas fa-book ml-2"></em></a></td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</section>
+
+<footer id="footer" class="footer-area" th:insert="~{base :: common_footer}">
+</footer>
+
+<div th:insert="~{base :: common_script}">
+</div>
+</body>
+</html>

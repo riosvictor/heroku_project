@@ -1,6 +1,7 @@
 package com.utfpr.ativadi.controllers;
 
 import com.utfpr.ativadi.entities.AulaConcrete;
+import com.utfpr.ativadi.entities.Constants;
 import com.utfpr.ativadi.entities.Mensagem;
 import com.utfpr.ativadi.repositories.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +25,7 @@ public class AulaController {
     private final String ERROR = "errorMessage";
     private final String SUCESS = "sucessMessage";
     private final String INICIO = "index_aula";
-    private final String TODAS_ATIVIDADES = "aulas";
+    private final String TODAS_AULAS = "aulas";
     private final String LOAD_ATIVIDADES = "listaAtividades";
     private final String LOAD_PROFESSORES = "listaProfessores";
     private final String LOAD_MATERIAS = "listaMaterias";
@@ -47,7 +48,13 @@ public class AulaController {
         if (!SessionController.freeAccess())
             return SessionController.LOGIN;
 
-        model.addAttribute(TODAS_ATIVIDADES, aulaRepository.findAll());
+        if (SessionController.getUser().getTipo().equals(Constants.PROFESSOR)) {
+            long professorId = SessionController.getUser().getId();
+            model.addAttribute(TODAS_AULAS, aulaRepository.findAllByProfessor(professorId));
+        } else {
+            model.addAttribute(TODAS_AULAS, aulaRepository.findAll());
+        }
+
         return INICIO;
     }
 
@@ -57,10 +64,20 @@ public class AulaController {
             return SessionController.LOGIN;
 
         model.addAttribute("aula", aula);
-        model.addAttribute(LOAD_PROFESSORES, professorRepository.findProfessorAll());
-        model.addAttribute(LOAD_MATERIAS, materiaRepository.findAll());
-        model.addAttribute(LOAD_TURMAS, turmaRepository.findAll());
-        model.addAttribute(LOAD_ATIVIDADES, atividadeRepository.findAll());
+
+        if (SessionController.getUser().getTipo().equals(Constants.PROFESSOR)) {
+            long professorId = SessionController.getUser().getId();
+
+            model.addAttribute(LOAD_PROFESSORES, professorRepository.findProfessorById(professorId).get());
+            model.addAttribute(LOAD_TURMAS, turmaRepository.findAllByProfessorId(professorId));
+            model.addAttribute(LOAD_MATERIAS, materiaRepository.findAllAtivas());
+            model.addAttribute(LOAD_ATIVIDADES, atividadeRepository.findAll());
+        } else {
+            model.addAttribute(LOAD_PROFESSORES, professorRepository.findProfessorAll());
+            model.addAttribute(LOAD_MATERIAS, materiaRepository.findAllAtivas());
+            model.addAttribute(LOAD_TURMAS, turmaRepository.findAll());
+            model.addAttribute(LOAD_ATIVIDADES, atividadeRepository.findAll());
+        }
 
         return "add_aula";
     }
@@ -72,18 +89,29 @@ public class AulaController {
 
         if (result.hasErrors()) {
             model.addAttribute("aula", aula);
-            model.addAttribute(LOAD_PROFESSORES, professorRepository.findProfessorAll());
-            model.addAttribute(LOAD_MATERIAS, materiaRepository.findAll());
-            model.addAttribute(LOAD_TURMAS, turmaRepository.findAll());
-            model.addAttribute(LOAD_ATIVIDADES, atividadeRepository.findAll());
             model.addAttribute(ERROR, Mensagem.getInstance(false, Mensagem.Funcao.ADICIONAR).show());
+
+            if (SessionController.getUser().getTipo().equals(Constants.PROFESSOR)) {
+                long professorId = SessionController.getUser().getId();
+
+                model.addAttribute(LOAD_PROFESSORES, professorRepository.findProfessorById(professorId).get());
+                model.addAttribute(LOAD_TURMAS, turmaRepository.findAllByProfessorId(professorId));
+                model.addAttribute(LOAD_MATERIAS, materiaRepository.findAllAtivas());
+                model.addAttribute(LOAD_ATIVIDADES, atividadeRepository.findAll());
+            } else {
+                model.addAttribute(LOAD_PROFESSORES, professorRepository.findProfessorAll());
+                model.addAttribute(LOAD_MATERIAS, materiaRepository.findAllAtivas());
+                model.addAttribute(LOAD_TURMAS, turmaRepository.findAll());
+                model.addAttribute(LOAD_ATIVIDADES, atividadeRepository.findAll());
+            }
 
             return "add_aula";
         }
 
         aula.setId(aulaRepository.getNewID());
+        aula.setStatus(Constants.ABERTO);
         aulaRepository.save(aula);
-        model.addAttribute(TODAS_ATIVIDADES, aulaRepository.findAll());
+        model.addAttribute(TODAS_AULAS, aulaRepository.findAll());
         model.addAttribute(SUCESS, Mensagem.getInstance(true, Mensagem.Funcao.ADICIONAR).show());
         auditoria.addAuditoria(Mensagem.getInstance(true, Mensagem.Funcao.ADICIONAR).show(), this.getClass().getSimpleName());
 
@@ -117,7 +145,7 @@ public class AulaController {
         }
 
         aulaRepository.save(aula);
-        model.addAttribute(TODAS_ATIVIDADES, aulaRepository.findAll());
+        model.addAttribute(TODAS_AULAS, aulaRepository.findAll());
         model.addAttribute(SUCESS, Mensagem.getInstance(true, Mensagem.Funcao.ALTERAR).show());
         auditoria.addAuditoria(Mensagem.getInstance(true, Mensagem.Funcao.ALTERAR).show(), this.getClass().getSimpleName());
 
@@ -131,7 +159,7 @@ public class AulaController {
 
         AulaConcrete aula = aulaRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Id da Matéria inválido:" + id));
         aulaRepository.delete(aula);
-        model.addAttribute(TODAS_ATIVIDADES, aulaRepository.findAll());
+        model.addAttribute(TODAS_AULAS, aulaRepository.findAll());
         model.addAttribute(SUCESS, Mensagem.getInstance(true, Mensagem.Funcao.REMOVER).show());
         auditoria.addAuditoria(Mensagem.getInstance(true, Mensagem.Funcao.REMOVER).show(), this.getClass().getSimpleName());
         return INICIO;
@@ -148,7 +176,7 @@ public class AulaController {
         clone.setId(aulaRepository.getNewID());
         aulaRepository.save(clone);
 
-        model.addAttribute(TODAS_ATIVIDADES, aulaRepository.findAll());
+        model.addAttribute(TODAS_AULAS, aulaRepository.findAll());
         model.addAttribute(SUCESS, Mensagem.getInstance(true, Mensagem.Funcao.CLONE).show());
         auditoria.addAuditoria(Mensagem.getInstance(true, Mensagem.Funcao.CLONE).show(), this.getClass().getSimpleName());
 

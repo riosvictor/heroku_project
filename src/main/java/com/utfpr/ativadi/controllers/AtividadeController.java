@@ -1,31 +1,32 @@
 package com.utfpr.ativadi.controllers;
 
-import com.utfpr.ativadi.entities.Atividade;
-import com.utfpr.ativadi.entities.AtividadeFactory;
-import com.utfpr.ativadi.entities.Mensagem;
+import com.utfpr.ativadi.entities.*;
 import com.utfpr.ativadi.repositories.AtividadeRepository;
+import com.utfpr.ativadi.repositories.MateriaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
+
 import javax.validation.Valid;
+import java.util.List;
 
 @Controller
 public class AtividadeController {
     private final AtividadeRepository atividadeRepository;
     private final AuditoriaController auditoria;
+    private final MateriaRepository materiaRepository;
     private final String ERROR = "errorMessage";
     private final String SUCESS = "sucessMessage";
     private final String INICIO = "index_atividade";
     private final String TODAS_ATIVIDADES = "atividades";
 
     @Autowired
-    public AtividadeController(AtividadeRepository atividadeRepository, AuditoriaController auditoria) {
+    public AtividadeController(AtividadeRepository atividadeRepository, AuditoriaController auditoria, MateriaRepository materiaRepository) {
         this.atividadeRepository = atividadeRepository;
         this.auditoria = auditoria;
+        this.materiaRepository = materiaRepository;
     }
 
     @GetMapping("/atividade")
@@ -118,5 +119,12 @@ public class AtividadeController {
 
         model.addAttribute(TODAS_ATIVIDADES, atividadeRepository.findAll());
         return INICIO;
+    }
+
+    @RequestMapping(value = "/materia_atividade", method = RequestMethod.GET)
+    public @ResponseBody
+    List<Atividade> findAtividadesByMateria(@RequestParam(value = "materiaId", required = true) Long materiaId) {
+        Materia materia = materiaRepository.findById(materiaId).orElseThrow(() -> new IllegalArgumentException("Id da Matéria inválido:" + materiaId));
+        return atividadeRepository.findAtividadeByGrau(materia.getGrau());
     }
 }

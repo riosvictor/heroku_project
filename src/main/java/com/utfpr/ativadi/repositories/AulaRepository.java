@@ -18,4 +18,10 @@ public interface AulaRepository extends CrudRepository<AulaConcrete, Long> {
 
     @Query(value = "SELECT COALESCE(MAX(id), 0) + 1 FROM ativadi.aula", nativeQuery = true)
     public long getNewID();
+
+    @Query(value = "SELECT * FROM ativadi.aula a WHERE a.id_professor = :id", nativeQuery = true)
+    public List<AulaConcrete> findAllByProfessor(@Param("id") Long id);
+
+    @Query(value = "SELECT * FROM ativadi.aula a WHERE a.id_turma = :id", nativeQuery = true)
+    public List<AulaConcrete> findAllByTurma(@Param("id") Long id);
 }

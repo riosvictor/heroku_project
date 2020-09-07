@@ -20,6 +20,15 @@ public abstract class Aula implements Serializable {
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date data;
 
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    private Date aberto_ate; //pode refazer valendo nota
+
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    private Date fechado_em; //pode refazer sem valer nota
+
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    private Date concluido_em; //não pode refazer
+
     @NotNull(message = "O Professor é um campo obrigatório")
     @ManyToOne
     @JoinColumn(name="id_professor")
@@ -51,7 +60,7 @@ public abstract class Aula implements Serializable {
             this.turma = target.turma;
             this.atividade = target.atividade;
             this.data = target.data;
-            this.status = StatusAula.ABERTO.getValue();
+            this.status = Constants.ABERTO;
         }
     }
 

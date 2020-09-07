@@ -1,5 +1,6 @@
 package com.utfpr.ativadi.controllers;
 
+import com.utfpr.ativadi.entities.Materia;
 import com.utfpr.ativadi.entities.Turma;
 import com.utfpr.ativadi.entities.Mensagem;
 import com.utfpr.ativadi.entities.Usuario;
@@ -9,9 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.*;
@@ -85,17 +84,6 @@ public class TurmaController {
 
         turmaRepository.save(turma);
 
-//        turmaRepository.deleteAllProfessores(turma.getId());
-//        turmaRepository.deleteAllAlunos(turma.getId());
-
-//        for (Usuario aluno : turma.getAlunos()) {
-//            turmaRepository.insertAluno(turma.getId(), aluno.getId());
-//        }
-
-//        for (Usuario professor : turma.getProfessores()) {
-//            turmaRepository.insertProfessor(turma.getId(), professor.getId());
-//        }
-
         model.addAttribute(TODAS_TURMAS, turmaRepository.findAll());
         model.addAttribute(SUCESS, Mensagem.getInstance(true, Mensagem.Funcao.ADICIONAR).show());
         auditoria.addAuditoria(Mensagem.getInstance(true, Mensagem.Funcao.ADICIONAR).show(),  this.getClass().getSimpleName());
@@ -165,5 +153,12 @@ public class TurmaController {
 
         model.addAttribute(TODAS_TURMAS, turmaRepository.findAll());
         return INICIO;
+    }
+
+    @RequestMapping(value = "/professor_turma", method = RequestMethod.GET)
+    public @ResponseBody
+    List<Turma> findTurmasByProfessor(@RequestParam(value = "professorId", required = true) Long professorId) {
+        Usuario usuario = usuarioRepository.findProfessorById(professorId).orElseThrow(() -> new IllegalArgumentException("Id do Professor inválido:" + professorId));
+        return turmaRepository.findAllByProfessorId(professorId);
     }
 }

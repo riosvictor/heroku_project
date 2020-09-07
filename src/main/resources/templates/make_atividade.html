@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="pt-br">
+<head th:replace="base :: common_header(~{::title})">
+    <link href="/css/calendar-contain.css" rel="stylesheet" >
+    <title>Atividade</title>
+</head>
+
+<body>
+<section class="header-area">
+    <div class="navbar-area" th:insert="~{base :: common_navbar}">
+    </div>
+
+    <div id="home" class="slider-area">
+
+
+        <div th:switch="${atividades}" class="container my-5">
+            <div class="row">
+                <div class="col-md-6">
+                    <main class="calendar-contain">
+                        <aside class="calendar__sidebar">
+                            <h2 class="sidebar__heading" th:text="${#dates.format(currentDate, 'dd/MM/yyyy  HH:mm')}"></h2>
+                            <ul class="sidebar__list">
+                                <li class="sidebar__list-item sidebar__list-item--complete" th:text="${aula.atividade.descricao}"></li>
+                            </ul>
+                        </aside>
+                    </main>
+                </div>
+                <div class="col-md-10">
+                    <iframe th:src="${aula.atividade.url_externa}" width="100%" height="100%"> </iframe>
+                </div>
+            </div>
+            <div class="row">
+                <div class="d-inline p-3">
+                    <input type="submit" class="btn btn-primary" value="Concluir">
+                    <a href="/aluno_atividade" class="btn btn-primary">Voltar</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</section>
+
+<footer id="footer" class="footer-area" th:insert="~{base :: common_footer}">
+</footer>
+
+<div th:insert="~{base :: common_script}">
+</div>
+</body>
+</html>

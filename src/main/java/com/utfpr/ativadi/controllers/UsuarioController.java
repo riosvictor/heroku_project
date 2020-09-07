@@ -1,5 +1,6 @@
 package com.utfpr.ativadi.controllers;
 
+import com.utfpr.ativadi.entities.Constants;
 import com.utfpr.ativadi.entities.Usuario;
 import com.utfpr.ativadi.entities.Mensagem;
 import com.utfpr.ativadi.repositories.UsuarioRepository;
@@ -25,8 +26,6 @@ public class UsuarioController {
     private final String USUARIO = "usuario";
     private Usuario user;
 
-    public final String ADMIN = "admin";
-
     @Autowired
     public UsuarioController(UsuarioRepository usuarioRepository, AuditoriaController auditoria) {
         this.usuarioRepository = usuarioRepository;
@@ -40,7 +39,7 @@ public class UsuarioController {
 
         this.user = (Usuario) request.getSession().getAttribute(USUARIO);
 
-        if (user.getTipo().equals("admin"))
+        if (user.getTipo().equals(Constants.ADMIN))
             model.addAttribute(TODOS_USUARIO, usuarioRepository.findAll());
         else
             model.addAttribute(TODOS_USUARIO, usuarioRepository.findById(user.getId()).get());
@@ -71,7 +70,7 @@ public class UsuarioController {
             return "add_usuario";
         }
 
-        if (usuario.getTipo() != ADMIN) {
+        if (usuario.getTipo() != Constants.ADMIN) {
             if (usuario.getGrau() <= 0) {
                 model.addAttribute(ERROR, "O Campo Grau é obrigatório!");
                 return "add_usuario";
@@ -117,7 +116,7 @@ public class UsuarioController {
             return "update_usuario";
         }
 
-        if (usuario.getTipo() != ADMIN) {
+        if (usuario.getTipo() != Constants.ADMIN) {
             if (usuario.getGrau() <= 0) {
                 model.addAttribute(ERROR, "O Campo Grau é obrigatório!");
                 return "update_usuario";
