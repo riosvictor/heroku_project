@@ -45,7 +45,7 @@ public class AulaController {
         if (!SessionController.freeAccess())
             return SessionController.LOGIN;
 
-        if (SessionController.getUser().getTipo().equals(Constants.PROFESSOR)) {
+        if (SessionController.getUser() != null && SessionController.getUser().getTipo().equals(Constants.PROFESSOR)) {
             long professorId = SessionController.getUser().getId();
             model.addAttribute(TODAS_AULAS, aulaRepository.findAllByProfessor(professorId));
         } else {

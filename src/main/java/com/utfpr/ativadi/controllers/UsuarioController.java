@@ -44,7 +44,7 @@ public class UsuarioController {
 
         this.user = (Usuario) request.getSession().getAttribute(USUARIO);
 
-        if (user.getTipo().equals(Constants.ADMIN))
+        if (user != null && user.getTipo().equals(Constants.ADMIN))
             model.addAttribute(TODOS_USUARIO, usuarioRepository.findAll());
         else
             model.addAttribute(TODOS_USUARIO, usuarioRepository.findById(user.getId()).get());
