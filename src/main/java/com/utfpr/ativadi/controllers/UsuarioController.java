@@ -28,7 +28,6 @@ public class UsuarioController {
     private final String TODOS_USUARIO = "usuarios";
     private final String LOAD_GRAUS = "listaGraus";
     private final String USUARIO = "usuario";
-    private Usuario user;
 
     @Autowired
     public UsuarioController(UsuarioRepository usuarioRepository, AuditoriaController auditoria, GrauRepository grauRepository) {
@@ -42,12 +41,10 @@ public class UsuarioController {
         if (!SessionController.freeAccess())
             return SessionController.LOGIN;
 
-        this.user = (Usuario) request.getSession().getAttribute(USUARIO);
-
-        if (user != null && user.getTipo().equals(Constants.ADMIN))
+        if (SessionController.getUser().getTipo() != null && SessionController.getUser().getTipo().equals(Constants.ADMIN))
             model.addAttribute(TODOS_USUARIO, usuarioRepository.findAll());
         else
-            model.addAttribute(TODOS_USUARIO, usuarioRepository.findById(user.getId()).get());
+            model.addAttribute(TODOS_USUARIO, usuarioRepository.findById(SessionController.getUser().getId()).get());
 
         return INICIO;
     }
