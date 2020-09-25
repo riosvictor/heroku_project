@@ -1,6 +1,7 @@
 package com.utfpr.ativadi.entities;
 
 import org.springframework.format.annotation.DateTimeFormat;
+
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
@@ -8,6 +9,9 @@ import java.util.Date;
 @Entity
 @Table(name = "auditoria", schema = "ativadi")
 public class Auditoria implements Serializable {
+
+    @Transient
+    private static final long serialVersionUID = -4263217779390728402L;
 
     @Id
     private long id;

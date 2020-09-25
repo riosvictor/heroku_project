@@ -37,7 +37,7 @@
                                         <th scope="col">Nome</th>
                                         <th scope="col">E-mail</th>
                                         <th scope="col">Tipo</th>
-                                        <th scope="col">Grau</th>
+                                        <th scope="col" style="width:80%;">Grau(s)</th>
                                         <th scope="col">Turno</th>
                                         <th scope="col">Alterar</th>
                                         <th scope="col" th:if="${session.usuario.tipo == 'admin'}">Remover</th>
@@ -52,10 +52,8 @@
                                             <span th:if="${usuario.tipo == 'professor'}">Professor</span>
                                             <span th:if="${usuario.tipo == 'aluno'}">Aluno</span>
                                         </td>
-                                        <td>
-                                            <span th:if="${usuario.grau == 0}"></span>
-                                            <span th:if="${usuario.grau == 1}">Pré-Escolar</span>
-                                            <span th:if="${usuario.grau == 2}">Escolar</span>
+                                        <td th:text="${#lists.isEmpty(usuario.graus)} ?
+                                            '' : ${#strings.listJoin(usuario.graus, ', ')}" style="width:80%;">
                                         </td>
                                         <td>
                                             <span th:if="${usuario.turno == 0}"></span>

@@ -1,8 +1,9 @@
 package com.utfpr.ativadi.controllers;
 
 import com.utfpr.ativadi.entities.Constants;
-import com.utfpr.ativadi.entities.Usuario;
 import com.utfpr.ativadi.entities.Mensagem;
+import com.utfpr.ativadi.entities.Usuario;
+import com.utfpr.ativadi.repositories.GrauRepository;
 import com.utfpr.ativadi.repositories.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -11,6 +12,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.Optional;
@@ -19,17 +21,20 @@ import java.util.Optional;
 public class UsuarioController {
     private final UsuarioRepository usuarioRepository;
     private final AuditoriaController auditoria;
+    private final GrauRepository grauRepository;
     private final String ERROR = "errorMessage";
     private final String SUCESS = "sucessMessage";
     private final String INICIO = "index_usuario";
     private final String TODOS_USUARIO = "usuarios";
+    private final String LOAD_GRAUS = "listaGraus";
     private final String USUARIO = "usuario";
     private Usuario user;
 
     @Autowired
-    public UsuarioController(UsuarioRepository usuarioRepository, AuditoriaController auditoria) {
+    public UsuarioController(UsuarioRepository usuarioRepository, AuditoriaController auditoria, GrauRepository grauRepository) {
         this.usuarioRepository = usuarioRepository;
         this.auditoria = auditoria;
+        this.grauRepository = grauRepository;
     }
 
     @GetMapping("/usuario")
@@ -48,10 +53,11 @@ public class UsuarioController {
     }
 
     @GetMapping("/newusuario")
-    public String abrirNovo(Usuario usuario) {
+    public String abrirNovo(Usuario usuario, Model model) {
         if (!SessionController.freeAccess())
             return SessionController.LOGIN;
 
+        model.addAttribute(LOAD_GRAUS, grauRepository.findAll());
         return "add_usuario";
     }
 
@@ -62,6 +68,7 @@ public class UsuarioController {
 
         if (result.hasErrors()) {
             model.addAttribute(ERROR, Mensagem.getInstance(false, Mensagem.Funcao.ADICIONAR).show());
+            model.addAttribute(LOAD_GRAUS, grauRepository.findAll());
             return "add_usuario";
         }
 
@@ -70,8 +77,8 @@ public class UsuarioController {
             return "add_usuario";
         }
 
-        if (usuario.getTipo() != Constants.ADMIN) {
-            if (usuario.getGrau() <= 0) {
+        if (!usuario.getTipo().equals(Constants.ADMIN)) {
+            if (usuario.getGraus().size() == 0) {
                 model.addAttribute(ERROR, "O Campo Grau é obrigatório!");
                 return "add_usuario";
             }
@@ -95,6 +102,7 @@ public class UsuarioController {
             return SessionController.LOGIN;
 
         Usuario usuario = usuarioRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Id do Usuario inválido:" + id));
+        model.addAttribute(LOAD_GRAUS, grauRepository.findAll());
         model.addAttribute("usuario", usuario);
         return "update_usuario";
     }
@@ -107,6 +115,7 @@ public class UsuarioController {
         if (result.hasErrors()) {
             usuario.setId(id);
             model.addAttribute(ERROR, Mensagem.getInstance(false, Mensagem.Funcao.ALTERAR).show());
+            model.addAttribute(LOAD_GRAUS, grauRepository.findAll());
             return "update_usuario";
         }
 
@@ -116,8 +125,8 @@ public class UsuarioController {
             return "update_usuario";
         }
 
-        if (usuario.getTipo() != Constants.ADMIN) {
-            if (usuario.getGrau() <= 0) {
+        if (!usuario.getTipo().equals(Constants.ADMIN)) {
+            if (usuario.getGraus().size() == 0) {
                 model.addAttribute(ERROR, "O Campo Grau é obrigatório!");
                 return "update_usuario";
             }

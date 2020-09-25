@@ -72,7 +72,11 @@
                                     <ul class="navbar-nav ml-auto">
                                         <li class="nav-item" th:if="${session.usuario != null and
                                                                       session.usuario.tipo != 'aluno'}">
-                                            <a class="page-scroll" href="/assunto">ASSUNTO</a>
+                                            <a class="page-scroll" href="/jogo">JOGO</a>
+                                        </li>
+                                        <li class="nav-item" th:if="${session.usuario != null and
+                                                                      session.usuario.tipo != 'aluno'}">
+                                            <a class="page-scroll" href="/conteudo">CONTEÚDO</a>
                                         </li>
                                         <li class="nav-item" th:if="${session.usuario != null and
                                                                       session.usuario.tipo != 'aluno'}">
@@ -80,11 +84,11 @@
                                         </li>
                                         <li class="nav-item" th:if="${session.usuario != null and
                                                                       session.usuario.tipo != 'aluno'}">
-                                            <a class="page-scroll" href="/turma">TURMA</a>
+                                            <a class="page-scroll" href="/atividade">ATIVIDADE</a>
                                         </li>
                                         <li class="nav-item" th:if="${session.usuario != null and
                                                                       session.usuario.tipo != 'aluno'}">
-                                            <a class="page-scroll" href="/atividade">ATIVIDADE</a>
+                                            <a class="page-scroll" href="/turma">TURMA</a>
                                         </li>
                                         <li class="nav-item" th:if="${session.usuario != null and
                                                                       session.usuario.tipo != 'aluno'}">
@@ -95,11 +99,11 @@
                                             <a class="page-scroll" href="/aluno_atividade">ATIVIDADE DO ALUNO</a>
                                         </li>
                                         <li class="nav-item" th:if="${session.usuario != null}">
-                                            <a class="page-scroll" href="/usuario">Usuário</a>
+                                            <a class="page-scroll" href="/usuario">USUÁRIO</a>
                                         </li>
                                         <li class="nav-item" th:if="${session.usuario != null and
                                                                       session.usuario.tipo == 'admin'}">
-                                            <a class="page-scroll" href="/auditoria">Auditoria</a>
+                                            <a class="page-scroll" href="/auditoria">AUDITORIA</a>
                                         </li>
                                         <li class="nav-item">
                                             <a class="page-scroll" href="/sobre">SOBRE</a>

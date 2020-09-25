@@ -12,7 +12,7 @@ import java.util.Optional;
 @Repository
 public interface UsuarioRepository extends CrudRepository<Usuario, Long> {
 
-    @Query(value = "SELECT * FROM ativadi.usuario ORDER BY tipo, grau, turno ASC ", nativeQuery = true)
+    @Query(value = "SELECT * FROM ativadi.usuario ORDER BY tipo, turno ASC ", nativeQuery = true)
     public List<Usuario> findAll();
 
     @Query(value = "SELECT * FROM ativadi.usuario u WHERE u.id = :id", nativeQuery = true)
@@ -36,9 +36,9 @@ public interface UsuarioRepository extends CrudRepository<Usuario, Long> {
     @Query(value = "SELECT * FROM ativadi.usuario u WHERE u.tipo = 'aluno'", nativeQuery = true)
     public List<Usuario> findAlunoAll();
 
-    @Query(value = "SELECT * FROM ativadi.usuario u WHERE u.tipo = 'professor' AND u.grau = :grau AND u.turno = :turno", nativeQuery = true)
-    public List<Usuario> findProfessorAllWhere(@Param("grau") int grau, @Param("turno") int turno);
+    @Query(value = "SELECT * FROM ativadi.usuario u WHERE u.tipo = 'professor' AND u.turno = :turno", nativeQuery = true)
+    public List<Usuario> findProfessorAllWhere(@Param("turno") int turno);
 
-    @Query(value = "SELECT * FROM ativadi.usuario u WHERE u.tipo = 'aluno' AND u.grau = :grau AND u.turno = :turno", nativeQuery = true)
-    public List<Usuario> findAlunoAllWhere(@Param("grau") int grau, @Param("turno") int turno);
+    @Query(value = "SELECT * FROM ativadi.usuario u WHERE u.tipo = 'aluno' AND u.turno = :turno", nativeQuery = true)
+    public List<Usuario> findAlunoAllWhere(@Param("turno") int turno);
 }

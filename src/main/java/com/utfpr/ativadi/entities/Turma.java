@@ -1,7 +1,5 @@
 package com.utfpr.ativadi.entities;
 
-import org.hibernate.annotations.GenericGenerator;
-
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -13,14 +11,14 @@ import java.util.List;
 @Table(name = "turma", schema = "ativadi")
 public class Turma implements Serializable {
 
+    @Transient
+    private static final long serialVersionUID = -3933767371507451179L;
+
     @Id
     private long id;
 
     @NotBlank(message = "A Descrição é um campo obrigatório")
     private String descricao;
-
-    @NotNull(message = "O Grau Escolar é um campo obrigatório")
-    private int grau;
 
     @NotNull(message = "O Turno é um campo obrigatório")
     private int turno;
@@ -37,12 +35,17 @@ public class Turma implements Serializable {
             inverseJoinColumns = @JoinColumn(name = "id_professor", referencedColumnName = "id", table = "usuario"))
     protected List<Usuario> professores;
 
+    @ManyToMany(cascade = CascadeType.DETACH)
+    @JoinTable(name = "turma_materia", schema = "ativadi",
+            joinColumns = @JoinColumn(name = "id_turma", referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(name = "id_materia", referencedColumnName = "id", table = "materia"))
+    protected List<Materia> materias;
+
     public Turma(){}
 
-    public Turma(long id, String descricao, int grau, int turno) {
+    public Turma(long id, String descricao, int turno) {
         this.id = id;
         this.descricao = descricao;
-        this.grau = grau;
         this.turno = turno;
         this.alunos = new ArrayList<>();
         this.professores = new ArrayList<>();
@@ -62,14 +65,6 @@ public class Turma implements Serializable {
 
     public void setDescricao(String descricao) {
         this.descricao = descricao;
-    }
-
-    public int getGrau() {
-        return grau;
-    }
-
-    public void setGrau(int grau) {
-        this.grau = grau;
     }
 
     public int getTurno() {
@@ -96,12 +91,19 @@ public class Turma implements Serializable {
         this.professores = professores;
     }
 
+    public List<Materia> getMaterias() {
+        return materias;
+    }
+
+    public void setMaterias(List<Materia> materias) {
+        this.materias = materias;
+    }
+
     @Override
     public String toString() {
         return "Turma{" +
                 "id=" + id +
                 ", descricao='" + descricao + '\'' +
-                ", grau=" + grau +
                 ", turno=" + turno +
                 '}';
     }

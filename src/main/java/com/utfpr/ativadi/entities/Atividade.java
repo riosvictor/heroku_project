@@ -1,14 +1,16 @@
 package com.utfpr.ativadi.entities;
 
-import org.hibernate.annotations.GenericGenerator;
-
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import java.io.Serializable;
 
 @Entity
 @Table(name = "atividade", schema = "ativadi")
-public class Atividade implements AtividadeFlyweight{
+public class Atividade implements AtividadeFlyweight, Serializable {
+
+    @Transient
+    private static final long serialVersionUID = 6857913359624129762L;
 
     @Id
     private long id;
@@ -16,19 +18,23 @@ public class Atividade implements AtividadeFlyweight{
     @NotBlank(message = "A Descrição é um campo obrigatório")
     private String descricao;
 
-    @NotNull(message = "O Grau Escolar é um campo obrigatório")
-    private int grau;
+    @NotNull(message = "O Jogo é um campo obrigatório")
+    @ManyToOne
+    @JoinColumn(name="id_jogo")
+    private Jogo jogo;
 
-    @Column(name = "url_externa")
-    private String url_externa;
+    @NotNull(message = "O Conteúdo é um campo obrigatório")
+    @ManyToOne
+    @JoinColumn(name="id_conteudo")
+    private Conteudo conteudo;
 
     public Atividade(){}
 
-    public Atividade(long id, String descricao, int grau, String url_externa) {
+    public Atividade(long id, String descricao, Jogo jogo, Conteudo conteudo) {
         this.id = id;
         this.descricao = descricao;
-        this.grau = grau;
-        this.url_externa = url_externa;
+        this.jogo = jogo;
+        this.conteudo = conteudo;
     }
 
     public long getId() {
@@ -48,20 +54,20 @@ public class Atividade implements AtividadeFlyweight{
         this.descricao = descricao;
     }
 
-    public int getGrau() {
-        return grau;
+    public Jogo getJogo() {
+        return jogo;
     }
 
-    public void setGrau(int grau) {
-        this.grau = grau;
+    public void setJogo(Jogo jogo) {
+        this.jogo = jogo;
     }
 
-    public String getUrl_externa() {
-        return url_externa;
+    public Conteudo getConteudo() {
+        return conteudo;
     }
 
-    public void setUrl_externa(String url_externa) {
-        this.url_externa = url_externa;
+    public void setConteudo(Conteudo conteudo) {
+        this.conteudo = conteudo;
     }
 
     @Override
@@ -69,8 +75,7 @@ public class Atividade implements AtividadeFlyweight{
         return "Atividade{" +
                 "id=" + id +
                 ", descricao='" + descricao + '\'' +
-                ", grau=" + grau +
-                ", url_externa='" + url_externa + '\'' +
+                ", jogo='" + jogo.getDescricao() + '\'' +
                 '}';
     }
 }

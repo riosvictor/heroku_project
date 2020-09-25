@@ -25,16 +25,6 @@
                         </div>
 
                         <div class="form-group">
-                            <label for="grau" class="col-form-label">Grau</label>
-                            <select th:field="*{grau}" id="grau" class="form-control">
-                                <option th:value="1" th:text="Pré-Escolar"></option>
-                                <option th:value="2" th:text="Escolar"></option>
-                            </select>
-                            <span th:if="${#fields.hasErrors('grau')}" th:errors="*{grau}" class="text-danger"></span>
-                            </br>
-                        </div>
-
-                        <div class="form-group">
                             <label for="turno" class="col-form-label">Turno</label>
                             <select th:field="*{turno}" id="turno" class="form-control">
                                 <option th:value="1" th:text="Matutino"></option>

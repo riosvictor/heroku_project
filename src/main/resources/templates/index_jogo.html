@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="pt-br">
     <head th:replace="base :: common_header(~{::title})">
-        <title>Assunto</title>
+        <title>Jogo</title>
     </head>
 
     <body>
@@ -10,32 +10,34 @@
             </div>
 
             <div id="home" class="slider-area">
-                <div th:switch="${assuntos}" class="container my-5">
+                <div th:switch="${jogos}" class="container my-5">
                     <div th:if="${errorMessage}" th:text="${errorMessage}" style="color:red"/>
                     <div th:if="${sucessMessage}" th:text="${sucessMessage}" style="color:green"/>
 
                     <div class="row">
                         <div class="col-md-6">
-                            <a href="/newassunto" class="btn btn-primary btn-novo d-flex flex-row-reverse"><em class="fas fa-user-plus ml-2"></em></a>
+                            <a href="/newjogo" class="btn btn-primary btn-novo d-flex flex-row-reverse"><em class="fas fa-user-plus ml-2"></em></a>
                             <p></p>
 
-                            <h2 th:if="${#lists.isEmpty(assuntos)}">Sem registros!</h2>
-                            <div th:unless="${#lists.isEmpty(assuntos)}">
-                                <h2 class="d-flex flex-row">Assuntos</h2>
+                            <h2 th:if="${#lists.isEmpty(jogos)}">Sem registros!</h2>
+                            <div th:unless="${#lists.isEmpty(jogos)}">
+                                <h2 class="d-flex flex-row">Jogos</h2>
                                 <table class="table table-striped" style="width:100%;">
-                                    <caption>Assuntos cadastrados</caption>
+                                    <caption>Jogos cadastrados</caption>
                                     <thead class="thead-light">
                                     <tr>
                                         <th scope="col">Descrição</th>
+                                        <th scope="col">Url</th>
                                         <th scope="col">Alterar</th>
                                         <th scope="col">Remover</th>
                                     </tr>
                                     </thead>
                                     <tbody>
-                                    <tr th:each="assunto : ${assuntos}">
-                                        <td th:text="${assunto.descricao}" style="width:80%;"></td>
-                                        <td><a th:href="@{/editassunto/{id}(id=${assunto.id})}" class="btn btn-primary"><em class="fas fa-user-edit ml-2"></em></a></td>
-                                        <td><a th:href="@{/deleteassunto/{id}(id=${assunto.id})}" class="btn btn-primary"><em class="fas fa-user-times ml-2"></em></a></td>
+                                    <tr th:each="jogo : ${jogos}">
+                                        <td th:text="${jogo.descricao}" style="width:80%;"></td>
+                                        <td th:text="${jogo.url}" style="width:80%;"></td>
+                                        <td><a th:href="@{/editjogo/{id}(id=${jogo.id})}" class="btn btn-primary"><em class="fas fa-user-edit ml-2"></em></a></td>
+                                        <td><a th:href="@{/deletejogo/{id}(id=${jogo.id})}" class="btn btn-primary"><em class="fas fa-user-times ml-2"></em></a></td>
                                     </tr>
                                     </tbody>
                                 </table>

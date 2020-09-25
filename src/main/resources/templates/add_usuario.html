@@ -43,16 +43,20 @@
                                     <input type="password" th:field="*{senha}" th:value="${senha}" class="form-control" id="senha" placeholder="Senha">
                                     <span th:if="${#fields.hasErrors('senha')}" th:errors="*{senha}" class="text-danger"></span>
                                 </div>
+
                                 <div class="form-group" id="usuario-grau">
-                                    <label for="grau" class="col-form-label">Grau</label>
-                                    <select th:field="*{grau}" id="grau" class="form-control">
-                                        <option th:value="0"></option>
-                                        <option th:value="1" th:text="Pré-Escolar"></option>
-                                        <option th:value="2" th:text="Escolar"></option>
+                                    <label for="graus" class="col-form-label">Grau(s)</label>
+                                    <br />
+                                    <select id="graus" th:field="*{graus}" class="form-control selectpicker" multiple="multiple" data-live-search="true">
+                                        <option th:each="g : ${listaGraus}"
+                                                th:value="${g.id}"
+                                                th:text="${g.descricao}">
+                                        </option>
                                     </select>
-                                    <span th:if="${#fields.hasErrors('grau')}" th:errors="*{grau}" class="text-danger"></span>
-                                    </br>
+                                    <span th:if="${#fields.hasErrors('graus')}" th:errors="*{graus}" class="text-danger"></span>
+                                    <br />
                                 </div>
+
                                 <div class="form-group" id="usuario-turno">
                                     <label for="turno" class="col-form-label">Turno</label>
                                     <select th:field="*{turno}" id="turno" class="form-control">
@@ -86,7 +90,9 @@
     </body>
 
     <script>
-        function selectTipo(tipo) {
+        $('select').selectpicker();
+
+        function showHideFields(tipo) {
             if (tipo.value != "admin") {
                 document.getElementById("usuario-turno").style.display = "block";
                 document.getElementById("usuario-grau").style.display = "block";
@@ -96,6 +102,20 @@
             }
         }
 
-        selectTipo(document.getElementById("usuario-tipo"));
+        function selectTipo(tipo) {
+            showHideFields(tipo);
+
+            $('#graus').selectpicker('deselectAll');
+
+            if (tipo.value == 'aluno') {
+                $('#graus').data('max-options', 1);
+            } else {
+                $('#graus').data('max-options', false);
+            }
+
+            $('#graus').selectpicker('refresh');
+        }
+
+        showHideFields(document.getElementById("usuario-tipo"));
     </script>
 </html>

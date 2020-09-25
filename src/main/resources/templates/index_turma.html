@@ -27,7 +27,6 @@
                             <thead class="thead-light">
                             <tr>
                                 <th scope="col">Descrição</th>
-                                <th scope="col">Grau</th>
                                 <th scope="col">Turno</th>
                                 <th scope="col">Alterar</th>
                                 <th scope="col">Remover</th>
@@ -37,10 +36,6 @@
                             <tbody>
                             <tr th:each="turma : ${turmas}">
                                 <td th:text="${turma.descricao}" style="width:80%;"></td>
-                                <td>
-                                    <span th:if="${turma.grau == 1}">Pré-Escolar</span>
-                                    <span th:unless="${turma.grau == 1}">Escolar</span>
-                                </td>
                                 <td>
                                     <span th:if="${turma.turno == 1}">Matutino</span>
                                     <span th:if="${turma.turno == 2}">Vespertino</span>

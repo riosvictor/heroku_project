@@ -28,6 +28,7 @@
                             <label for="professor" class="col-form-label">Professor</label>
                             <br />
                             <select th:field="*{professor}" id="professor" class="form-control">
+                                <option value=""></option>
                                 <option th:each="professor : ${listaProfessores}"
                                         th:value="${{professor.id}}"
                                         th:text="${professor.nome}">
@@ -38,20 +39,9 @@
                         </div>
 
                         <div class="form-group">
-                            <label for="materia" class="col-form-label">Matéria</label>
-                            <select th:field="*{materia}" id="materia" class="form-control">
-                                <option th:each="materia : ${listaMaterias}"
-                                        th:value="${{materia.id}}"
-                                        th:text="${materia.descricao}">
-                                </option>
-                            </select>
-                            <span th:if="${#fields.hasErrors('materia')}" th:errors="*{materia}" class="text-danger"></span>
-                            </br>
-                        </div>
-
-                        <div class="form-group">
                             <label for="turma" class="col-form-label">Turma</label>
                             <select th:field="*{turma}" id="turma" class="form-control">
+                                <option value=""></option>
                                 <option th:each="turma : ${listaTurmas}"
                                         th:value="${{turma.id}}"
                                         th:text="${turma.descricao}">
@@ -62,14 +52,14 @@
                         </div>
 
                         <div class="form-group">
-                            <label for="atividade" class="col-form-label">Atividade</label>
-                            <select th:field="*{atividade}" id="atividade" class="form-control">
+                            <label for="atividades" class="col-form-label">Atividades</label>
+                            <select th:field="*{atividades}" id="atividades" class="form-control" multiple="multiple">
                                 <option th:each="atividade : ${listaAtividades}"
                                         th:value="${{atividade.id}}"
                                         th:text="${atividade.descricao}">
                                 </option>
                             </select>
-                            <span th:if="${#fields.hasErrors('atividade')}" th:errors="*{atividade}" class="text-danger"></span>
+                            <span th:if="${#fields.hasErrors('atividades')}" th:errors="*{atividades}" class="text-danger"></span>
                             </br>
                         </div>
 
@@ -92,5 +82,50 @@
 
 <div th:insert="~{base :: common_script}">
 </div>
+
+<script>
+    $('select').selectpicker();
+
+    var base_url = window.location.origin;
+
+    $('#professor').change(
+        function() {
+            $.getJSON(base_url+"/turmas_por_professor", {
+                professorId : $(this).val(),
+                ajax : 'true'
+            }, function(data) {
+                var html = '<option value=""></option>';
+                var len = data.length;
+                for ( var i = 0; i < len; i++) {
+                    html += '<option value="' + data[i].id + '">'
+                            + data[i].descricao + '</option>';
+                }
+                html += '</option>';
+                $('#turma').html(html);
+                $('#turma').selectpicker('refresh');
+            });
+        }
+    );
+
+    $('#turma').change(
+        function() {
+            $.getJSON(base_url+"/atividades_por_turma", {
+                turmaId : $(this).val(),
+                ajax : 'true'
+            }, function(data) {
+                var html = '<option value=""></option>';
+                var len = data.length;
+                for ( var i = 0; i < len; i++) {
+                    html += '<option value="' + data[i].id + '">'
+                            + data[i].descricao + '</option>';
+                }
+                html += '</option>';
+                $('#atividades').html(html);
+                $('#atividades').selectpicker('refresh');
+            });
+        }
+    );
+</script>
+
 </body>
 </html>

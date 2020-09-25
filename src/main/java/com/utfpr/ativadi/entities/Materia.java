@@ -1,7 +1,5 @@
 package com.utfpr.ativadi.entities;
 
-import org.hibernate.annotations.GenericGenerator;
-
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -14,7 +12,11 @@ import java.util.stream.Collectors;
 @Table(name = "materia", schema = "ativadi")
 public class Materia implements ComponenteMateria, Serializable {
 
+    @Transient
+    private static final long serialVersionUID = -9200165852939914800L;
+
     @Id
+    @Column(name = "id")
     protected long id;
 
     @NotBlank(message = "A Descrição é um campo obrigatório")
@@ -22,29 +24,26 @@ public class Materia implements ComponenteMateria, Serializable {
     protected String descricao;
 
     @ManyToMany(cascade = CascadeType.DETACH)
-    @JoinTable(name = "materia_assunto", schema = "ativadi",
+    @JoinTable(name = "materia_conteudo", schema = "ativadi",
             joinColumns = @JoinColumn(name = "id_materia", referencedColumnName = "id"),
-            inverseJoinColumns = @JoinColumn(name = "id_assunto", referencedColumnName = "id", table = "assunto"))
-    protected List<Assunto> assuntos;
-
-    @NotNull(message = "O Grau Escolar é um campo obrigatório")
-    protected int grau;
-
-    @NotBlank(message = "O Objetivo é um campo obrigatório")
-    protected String objetivos;
+            inverseJoinColumns = @JoinColumn(name = "id_conteudo", referencedColumnName = "id", table = "conteudo"))
+    protected List<Conteudo> conteudos = new ArrayList<>();
 
     @NotNull(message = "A Situação é um campo obrigatório")
     protected boolean ativo;
 
+    @ManyToMany(cascade = CascadeType.DETACH)
+    @JoinTable(name = "materia_grau", schema = "ativadi",
+            joinColumns = @JoinColumn(name = "id_materia", referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(name = "id_grau", referencedColumnName = "id", table = "grau"))
+    protected List<Grau> graus = new ArrayList<>();
+
     public Materia(){}
 
-    public Materia(long id, String descricao, int grau, String objetivos, boolean ativo) {
+    public Materia(long id, String descricao, boolean ativo) {
         this.id = id;
         this.descricao = descricao;
-        this.grau = grau;
-        this.objetivos = objetivos;
         this.ativo = ativo;
-        this.assuntos = new ArrayList<>();
     }
 
     @Override
@@ -67,22 +66,6 @@ public class Materia implements ComponenteMateria, Serializable {
         this.descricao = descricao;
     }
 
-    public int getGrau() {
-        return grau;
-    }
-
-    public void setGrau(int grau) {
-        this.grau = grau;
-    }
-
-    public String getObjetivos() {
-        return objetivos;
-    }
-
-    public void setObjetivos(String objetivos) {
-        this.objetivos = objetivos;
-    }
-
     public boolean isAtivo() {
         return ativo;
     }
@@ -91,20 +74,28 @@ public class Materia implements ComponenteMateria, Serializable {
         this.ativo = ativo;
     }
 
-    public List<Assunto> getAssuntos() {
-        return assuntos;
+    public List<Conteudo> getConteudos() {
+        return conteudos;
     }
 
-    public void setAssuntos(List<Assunto> assuntos) {
-        this.assuntos = assuntos;
+    public void setConteudos(List<Conteudo> conteudos) {
+        this.conteudos = conteudos;
     }
 
-    public void Adicionar(Assunto assunto){
-        assuntos.add(assunto);
+    public List<Grau> getGraus() {
+        return graus;
     }
 
-    public void Remover(Assunto assunto){
-        assuntos.remove(assunto);
+    public void setGraus(List<Grau> graus) {
+        this.graus = graus;
+    }
+
+    public void Adicionar(Conteudo conteudo){
+        conteudos.add(conteudo);
+    }
+
+    public void Remover(Conteudo conteudo){
+        conteudos.remove(conteudo);
     }
 
     @Override
@@ -112,9 +103,8 @@ public class Materia implements ComponenteMateria, Serializable {
         return  "Materia{" +
                 ", id=" + id +
                 ", descricao=" + descricao +
-                ", assuntos=" + assuntos.stream().map(n-> String.valueOf(n.getDescricao())).collect(Collectors.joining(",","{","}")) +
-                ", grau=" + grau +
-                ", objetivos='" + objetivos + '\'' +
+                ", conteudos=" + conteudos.stream().map(n-> String.valueOf(n.getDescricao())).collect(Collectors.joining(",","{","}")) +
+                ", graus=" + graus.stream().map(n-> String.valueOf(n.getDescricao())).collect(Collectors.joining(",","{","}")) +
                 ", ativo=" + ativo +
                 '}';
     }

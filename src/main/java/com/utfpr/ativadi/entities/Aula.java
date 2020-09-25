@@ -1,15 +1,21 @@
 package com.utfpr.ativadi.entities;
 
-import org.hibernate.annotations.GenericGenerator;
 import org.springframework.format.annotation.DateTimeFormat;
+
 import javax.persistence.*;
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 @MappedSuperclass
 public abstract class Aula implements Serializable {
+
+    @Transient
+    private static final long serialVersionUID = -5924480645127534035L;
 
     @Id
     private long id;
@@ -29,25 +35,22 @@ public abstract class Aula implements Serializable {
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date concluido_em; //não pode refazer
 
-    @NotNull(message = "O Professor é um campo obrigatório")
     @ManyToOne
     @JoinColumn(name="id_professor")
+    @NotNull(message = "O Professor é um campo obrigatório")
     private Usuario professor;
 
-    @NotNull(message = "A Matéria é um campo obrigatório")
-    @ManyToOne
-    @JoinColumn(name="id_materia")
-    private Materia materia;
-
-    @NotNull(message = "A Turma é um campo obrigatório")
     @ManyToOne
     @JoinColumn(name="id_turma")
+    @NotNull(message = "A Turma é um campo obrigatório")
     private Turma turma;
 
-    @NotNull(message = "A Atividade é um campo obrigatório")
-    @ManyToOne
-    @JoinColumn(name="id_atividade")
-    private Atividade atividade;
+    @ManyToMany(cascade = CascadeType.DETACH)
+    @JoinTable(name = "aula_atividade", schema = "ativadi",
+            joinColumns = @JoinColumn(name = "id_aula", referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(name = "id_atividade", referencedColumnName = "id", table = "atividade"))
+    @NotEmpty(message = "A Atividade é um campo obrigatório")
+    protected List<Atividade> atividades;
 
 
     public Aula(){}
@@ -56,9 +59,8 @@ public abstract class Aula implements Serializable {
         if (target != null) {
             this.id = target.id;
             this.professor = target.professor;
-            this.materia = target.materia;
             this.turma = target.turma;
-            this.atividade = target.atividade;
+            this.atividades = target.atividades;
             this.data = target.data;
             this.status = Constants.ABERTO;
         }
@@ -88,14 +90,6 @@ public abstract class Aula implements Serializable {
         this.professor = professor;
     }
 
-    public Materia getMateria() {
-        return materia;
-    }
-
-    public void setMateria(Materia materia) {
-        this.materia = materia;
-    }
-
     public Turma getTurma() {
         return turma;
     }
@@ -112,12 +106,12 @@ public abstract class Aula implements Serializable {
         this.status = status;
     }
 
-    public Atividade getAtividade() {
-        return atividade;
+    public List<Atividade> getAtividades() {
+        return atividades;
     }
 
-    public void setAtividade(Atividade atividade) {
-        this.atividade = atividade;
+    public void setAtividades(List<Atividade> atividade) {
+        this.atividades = atividade;
     }
 
     @Override
@@ -126,9 +120,8 @@ public abstract class Aula implements Serializable {
                 "id=" + id +
                 ", data=" + data +
                 ", professor=" + professor +
-                ", materia=" + materia +
                 ", turma=" + turma +
-                ", atividade=" + atividade +
+                ", atividades=" + atividades.stream().map(n-> String.valueOf(n.getDescricao())).collect(Collectors.joining(",","{","}")) +
                 ", status=" + status +
                 '}';
     }
@@ -139,7 +132,6 @@ public abstract class Aula implements Serializable {
         Aula shape2 = (Aula) object2;
         return (shape2.data == this.data) &&
                 Objects.equals(shape2.professor,this.professor) &&
-                Objects.equals(shape2.turma, this.turma) &&
-                Objects.equals(shape2.atividade, this.atividade);
+                Objects.equals(shape2.turma, this.turma);
     }
 }

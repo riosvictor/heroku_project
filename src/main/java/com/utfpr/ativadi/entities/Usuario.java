@@ -2,12 +2,16 @@ package com.utfpr.ativadi.entities;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "usuario", schema = "ativadi")
 public class Usuario implements Serializable {
+
+    @Transient
+    private static final long serialVersionUID = 2131812563595422090L;
 
     @Id
     private long id;
@@ -25,20 +29,24 @@ public class Usuario implements Serializable {
     private String tipo;
 
     @Column(nullable = true)
-    private Integer grau;
+    @ManyToMany(cascade = CascadeType.DETACH)
+    @JoinTable(name = "usuario_grau", schema = "ativadi",
+            joinColumns = @JoinColumn(name = "id_usuario", referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(name = "id_grau", referencedColumnName = "id", table = "grau"))
+    protected List<Grau> graus = new ArrayList<>();
 
     @Column(nullable = true)
     private Integer turno;
 
     public Usuario(){}
 
-    public Usuario(long id, String nome, String senha, String email, String tipo, int grau, int turno) {
+    public Usuario(long id, String nome, String senha, String email, String tipo, List<Grau> graus, Integer turno) {
         this.id = id;
         this.nome = nome;
         this.senha = senha;
         this.email = email;
         this.tipo = tipo;
-        this.grau = grau;
+        this.graus = graus;
         this.turno = turno;
     }
 
@@ -82,21 +90,20 @@ public class Usuario implements Serializable {
         this.tipo = tipo;
     }
 
-
-    public int getGrau() {
-        return grau == null ? 0 : grau;
-    }
-
-    public void setGrau(Integer grau) {
-        this.grau = grau;
-    }
-
     public int getTurno() {
         return turno == null ? 0 : turno;
     }
 
     public void setTurno(Integer turno) {
         this.turno = turno;
+    }
+
+    public List<Grau> getGraus() {
+        return graus;
+    }
+
+    public void setGraus(List<Grau> graus) {
+        this.graus = graus;
     }
 }
 

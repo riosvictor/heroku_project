@@ -26,31 +26,27 @@
                             <caption>Matérias cadastradas</caption>
                             <thead class="thead-light">
                             <tr>
-                                <th scope="col">Assunto</th>
                                 <th scope="col">Descrição</th>
-                                <th scope="col">Grau</th>
-                                <th scope="col">Objetivos</th>
+                                <th scope="col">Grau(s)</th>
                                 <th scope="col">Situação</th>
+                                <th scope="col">Conteúdos</th>
                                 <th scope="col">Alterar</th>
                                 <th scope="col">Remover</th>
                             </tr>
                             </thead>
                             <tbody>
                             <tr th:each="materia : ${materias}">
-                                <td style="width:80%;">
-                                    <div th:each="assunto : ${materia.assuntos}">
-                                        <p th:text="${assunto.descricao}"/>
-                                    </div>
-                                </td>
                                 <td th:text="${materia.descricao}" style="width:80%;"></td>
-                                <td>
-                                    <span th:if="${materia.grau == 1}">Pré-Escolar</span>
-                                    <span th:unless="${materia.grau == 1}">Escolar</span>
-                                </td>
-                                <td th:text="${materia.objetivos}"></td>
+                                <td th:text="${#lists.isEmpty(materia.graus)} ?
+                                    '' : ${#strings.listJoin(materia.graus, ', ')}" style="width:80%;"></td>
                                 <td>
                                     <span th:if="${materia.ativo}">Ativa</span>
                                     <span th:unless="${materia.ativo}">Inativa</span>
+                                </td>
+                                <td style="width:80%;">
+                                    <div th:each="conteudo : ${materia.conteudos}">
+                                        <p th:text="${conteudo.descricao}"/>
+                                    </div>
                                 </td>
                                 <td><a th:href="@{/editmateria/{id}(id=${materia.id})}" class="btn btn-primary"><em class="fas fa-user-edit ml-2"></em></a></td>
                                 <td><a th:href="@{/deletemateria/{id}(id=${materia.id})}" class="btn btn-primary"><em class="fas fa-user-times ml-2"></em></a></td>

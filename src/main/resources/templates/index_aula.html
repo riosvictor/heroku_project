@@ -27,7 +27,6 @@
                             <tr>
                                 <th scope="col">Data de Realização</th>
                                 <th scope="col">Professor</th>
-                                <th scope="col">Matéria</th>
                                 <th scope="col">Turma</th>
                                 <th scope="col">Atividade</th>
                                 <th scope="col">Alterar</th>
@@ -39,9 +38,8 @@
                             <tr th:each="aula : ${aulas}">
                                 <td th:text="${#dates.format(aula.data, 'dd/MM/yyyy')}"></td>
                                 <td th:text="${aula.professor.nome}"></td>
-                                <td th:text="${aula.materia.descricao}" style="width:80%;"></td>
                                 <td th:text="${aula.turma.descricao}"></td>
-                                <td th:text="${aula.atividade.descricao}"></td>
+                                <td th:text="${#lists.size(aula.atividades)}"></td>
                                 <td><a th:href="@{/editaula/{id}(id=${aula.id})}" class="btn btn-primary"><em class="fas fa-user-edit ml-2"></em></a></td>
                                 <td><a th:href="@{/deleteaula/{id}(id=${aula.id})}" class="btn btn-primary"><em class="fas fa-user-times ml-2"></em></a></td>
                                 <td><a th:href="@{/cloneaula/{id}(id=${aula.id})}" class="btn btn-primary"><em class="fas fa-clone ml-2"></em></a></td>

@@ -27,8 +27,8 @@
                             <thead class="thead-light">
                             <tr>
                                 <th scope="col">Descrição</th>
-                                <th scope="col">Grau</th>
-                                <th scope="col">URL</th>
+                                <th scope="col">Conteúdo</th>
+                                <th scope="col">Jogo</th>
                                 <th scope="col">Alterar</th>
                                 <th scope="col">Remover</th>
                             </tr>
@@ -36,11 +36,8 @@
                             <tbody>
                             <tr th:each="atividade : ${atividades}">
                                 <td th:text="${atividade.descricao}" style="width:80%;"></td>
-                                <td>
-                                    <span th:if="${atividade.grau == 1}">Pré-Escolar</span>
-                                    <span th:unless="${atividade.grau == 1}">Escolar</span>
-                                </td>
-                                <td th:text="${atividade.url_externa}"></td>
+                                <td th:text="${atividade.conteudo.descricao}"></td>
+                                <td th:text="${atividade.jogo.descricao}"></td>
                                 <td><a th:href="@{/editatividade/{id}(id=${atividade.id})}" class="btn btn-primary"><em class="fas fa-user-edit ml-2"></em></a></td>
                                 <td><a th:href="@{/deleteatividade/{id}(id=${atividade.id})}" class="btn btn-primary"><em class="fas fa-user-times ml-2"></em></a></td>
                             </tr>

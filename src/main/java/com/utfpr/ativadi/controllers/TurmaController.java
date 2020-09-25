@@ -1,23 +1,26 @@
 package com.utfpr.ativadi.controllers;
 
-import com.utfpr.ativadi.entities.Materia;
-import com.utfpr.ativadi.entities.Turma;
 import com.utfpr.ativadi.entities.Mensagem;
-import com.utfpr.ativadi.entities.Usuario;
+import com.utfpr.ativadi.entities.Turma;
+import com.utfpr.ativadi.repositories.MateriaRepository;
 import com.utfpr.ativadi.repositories.TurmaRepository;
 import com.utfpr.ativadi.repositories.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 
 import javax.validation.Valid;
-import java.util.*;
+import java.util.Calendar;
+import java.util.Date;
 
 @Controller
 public class TurmaController {
     private final TurmaRepository turmaRepository;
+    private final MateriaRepository materiaRepository;
     private final AuditoriaController auditoria;
     private final UsuarioRepository usuarioRepository;
     private final String ERROR = "errorMessage";
@@ -26,14 +29,12 @@ public class TurmaController {
     private final String TODAS_TURMAS = "turmas";
     private final String LOAD_PROFESSORES = "listaProfessores";
     private final String LOAD_ALUNOS = "listaAlunos";
-
-    public final String TEACHER = "professor";
-    public final String STUDENT = "aluno";
-
+    private final String LOAD_MATERIAS = "listaMaterias";
 
     @Autowired
-    public TurmaController(TurmaRepository turmaRepository, UsuarioRepository usuarioRepository, AuditoriaController auditoria) {
+    public TurmaController(TurmaRepository turmaRepository, UsuarioRepository usuarioRepository, MateriaRepository materiaRepository, AuditoriaController auditoria) {
         this.turmaRepository = turmaRepository;
+        this.materiaRepository = materiaRepository;
         this.usuarioRepository = usuarioRepository;
         this.auditoria = auditoria;
     }
@@ -62,8 +63,9 @@ public class TurmaController {
 
         Turma turma = turmaRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Id da Matéria inválido:" + id));
 
-        model.addAttribute(LOAD_PROFESSORES, usuarioRepository.findProfessorAllWhere(turma.getGrau(), turma.getTurno()));
-        model.addAttribute(LOAD_ALUNOS, usuarioRepository.findAlunoAllWhere(turma.getGrau(), turma.getTurno()));
+        model.addAttribute(LOAD_PROFESSORES, usuarioRepository.findProfessorAllWhere(turma.getTurno()));
+        model.addAttribute(LOAD_ALUNOS, usuarioRepository.findAlunoAllWhere(turma.getTurno()));
+        model.addAttribute(LOAD_MATERIAS, materiaRepository.findAll());
 
         Calendar cal = Calendar.getInstance();
         Date today = cal.getTime();
@@ -153,12 +155,5 @@ public class TurmaController {
 
         model.addAttribute(TODAS_TURMAS, turmaRepository.findAll());
         return INICIO;
-    }
-
-    @RequestMapping(value = "/professor_turma", method = RequestMethod.GET)
-    public @ResponseBody
-    List<Turma> findTurmasByProfessor(@RequestParam(value = "professorId", required = true) Long professorId) {
-        Usuario usuario = usuarioRepository.findProfessorById(professorId).orElseThrow(() -> new IllegalArgumentException("Id do Professor inválido:" + professorId));
-        return turmaRepository.findAllByProfessorId(professorId);
     }
 }

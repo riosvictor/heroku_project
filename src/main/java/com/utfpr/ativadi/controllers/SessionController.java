@@ -1,9 +1,12 @@
 package com.utfpr.ativadi.controllers;
 
+import com.sendgrid.Method;
+import com.sendgrid.Request;
+import com.sendgrid.Response;
+import com.sendgrid.SendGrid;
 import com.sendgrid.helpers.mail.Mail;
 import com.sendgrid.helpers.mail.objects.Content;
 import com.sendgrid.helpers.mail.objects.Email;
-import com.utfpr.ativadi.component.EmailService;
 import com.utfpr.ativadi.entities.Mensagem;
 import com.utfpr.ativadi.entities.Usuario;
 import com.utfpr.ativadi.repositories.UsuarioRepository;
@@ -17,14 +20,12 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
+
 import javax.script.ScriptException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.Optional;
-import java.lang.*;
-import com.sendgrid.*;
 
 
 @Controller

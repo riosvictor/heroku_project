@@ -2,10 +2,15 @@ package com.utfpr.ativadi.entities;
 
 import javax.persistence.Entity;
 import javax.persistence.Table;
+import javax.persistence.Transient;
+import java.io.Serializable;
 
 @Entity(name = "Aula")
 @Table(name = "aula", schema = "ativadi")
-public class AulaConcrete extends Aula implements PrototypeAula{
+public class AulaConcrete extends Aula implements PrototypeAula, Serializable {
+
+    @Transient
+    private static final long serialVersionUID = -2774691941039676822L;
 
     public AulaConcrete() {
     }

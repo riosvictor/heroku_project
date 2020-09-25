@@ -1,8 +1,12 @@
 package com.utfpr.ativadi.controllers;
 
-import com.utfpr.ativadi.entities.*;
+import com.utfpr.ativadi.entities.Atividade;
+import com.utfpr.ativadi.entities.AtividadeFactory;
+import com.utfpr.ativadi.entities.Jogo;
+import com.utfpr.ativadi.entities.Mensagem;
 import com.utfpr.ativadi.repositories.AtividadeRepository;
-import com.utfpr.ativadi.repositories.MateriaRepository;
+import com.utfpr.ativadi.repositories.ConteudoRepository;
+import com.utfpr.ativadi.repositories.JogoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -16,17 +20,21 @@ import java.util.List;
 public class AtividadeController {
     private final AtividadeRepository atividadeRepository;
     private final AuditoriaController auditoria;
-    private final MateriaRepository materiaRepository;
+    private final JogoRepository jogoRepository;
+    private final ConteudoRepository conteudoRepository;
     private final String ERROR = "errorMessage";
     private final String SUCESS = "sucessMessage";
     private final String INICIO = "index_atividade";
     private final String TODAS_ATIVIDADES = "atividades";
+    private final String LOAD_JOGOS = "listaJogos";
+    private final String LOAD_CONTEUDOS = "listaConteudos";
 
     @Autowired
-    public AtividadeController(AtividadeRepository atividadeRepository, AuditoriaController auditoria, MateriaRepository materiaRepository) {
+    public AtividadeController(AtividadeRepository atividadeRepository, AuditoriaController auditoria, JogoRepository jogoRepository, ConteudoRepository conteudoRepository) {
         this.atividadeRepository = atividadeRepository;
         this.auditoria = auditoria;
-        this.materiaRepository = materiaRepository;
+        this.jogoRepository = jogoRepository;
+        this.conteudoRepository = conteudoRepository;
     }
 
     @GetMapping("/atividade")
@@ -39,10 +47,12 @@ public class AtividadeController {
     }
 
     @GetMapping("/newatividade")
-    public String abrirNovo(Atividade atividade) {
+    public String abrirNovo(Atividade atividade, Model model) {
         if (!SessionController.freeAccess())
             return SessionController.LOGIN;
 
+        model.addAttribute(LOAD_JOGOS, jogoRepository.findAll());
+        model.addAttribute(LOAD_CONTEUDOS, conteudoRepository.findAll());
         return "add_atividade";
     }
 
@@ -56,6 +66,8 @@ public class AtividadeController {
 
         if (result.hasErrors()) {
             model.addAttribute(ERROR, Mensagem.getInstance(false, Mensagem.Funcao.ADICIONAR).show());
+            model.addAttribute(LOAD_JOGOS, jogoRepository.findAll());
+            model.addAttribute(LOAD_CONTEUDOS, conteudoRepository.findAll());
             return "add_atividade";
         }
 
@@ -80,6 +92,8 @@ public class AtividadeController {
             return SessionController.LOGIN;
 
         Atividade atividade = atividadeRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Id da Atividade inválido:" + id));
+        model.addAttribute(LOAD_JOGOS, jogoRepository.findAll());
+        model.addAttribute(LOAD_CONTEUDOS, conteudoRepository.findAll());
         model.addAttribute("atividade", atividade);
         return "update_atividade";
     }
@@ -91,6 +105,8 @@ public class AtividadeController {
 
         if (result.hasErrors()) {
             atividade.setId(id);
+            model.addAttribute(LOAD_JOGOS, jogoRepository.findAll());
+            model.addAttribute(LOAD_CONTEUDOS, conteudoRepository.findAll());
             model.addAttribute(ERROR, Mensagem.getInstance(false, Mensagem.Funcao.ALTERAR).show());
             return "update_atividade";
         }
@@ -121,10 +137,9 @@ public class AtividadeController {
         return INICIO;
     }
 
-    @RequestMapping(value = "/materia_atividade", method = RequestMethod.GET)
+    @RequestMapping(value = "/jogos_por_conteudo", method = RequestMethod.GET)
     public @ResponseBody
-    List<Atividade> findAtividadesByMateria(@RequestParam(value = "materiaId", required = true) Long materiaId) {
-        Materia materia = materiaRepository.findById(materiaId).orElseThrow(() -> new IllegalArgumentException("Id da Matéria inválido:" + materiaId));
-        return atividadeRepository.findAtividadeByGrau(materia.getGrau());
+    List<Jogo> findJogosByConteudo(@RequestParam(value = "conteudoId", required = true) Long conteudoId) {
+        return conteudoId == null ? jogoRepository.findAll() : jogoRepository.findJogosByConteudo(conteudoId);
     }
 }

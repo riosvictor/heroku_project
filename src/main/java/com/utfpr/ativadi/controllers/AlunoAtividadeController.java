@@ -1,10 +1,11 @@
 package com.utfpr.ativadi.controllers;
 
-import com.utfpr.ativadi.entities.Auditoria;
-import com.utfpr.ativadi.entities.AulaConcrete;
+import com.utfpr.ativadi.entities.Atividade;
 import com.utfpr.ativadi.entities.Constants;
 import com.utfpr.ativadi.entities.Turma;
-import com.utfpr.ativadi.repositories.*;
+import com.utfpr.ativadi.repositories.AtividadeRepository;
+import com.utfpr.ativadi.repositories.AulaRepository;
+import com.utfpr.ativadi.repositories.TurmaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -17,14 +18,16 @@ import java.util.Date;
 @Controller
 public class AlunoAtividadeController {
     private final AulaRepository aulaRepository;
+    private final AtividadeRepository atividadeRepository;
     private final TurmaRepository turmaRepository;
     private final AuditoriaController auditoria;
     private final String INICIO = "index_aula_aluno";
     private final String TODAS_AULAS = "aulas";
 
     @Autowired
-    public AlunoAtividadeController(AulaRepository aulaRepository, TurmaRepository turmaRepository, AuditoriaController auditoria) {
+    public AlunoAtividadeController(AulaRepository aulaRepository, TurmaRepository turmaRepository, AtividadeRepository atividadeRepository, AuditoriaController auditoria) {
         this.aulaRepository = aulaRepository;
+        this.atividadeRepository = atividadeRepository;
         this.turmaRepository = turmaRepository;
         this.auditoria = auditoria;
     }
@@ -43,13 +46,13 @@ public class AlunoAtividadeController {
         return INICIO;
     }
 
-    @GetMapping("/realizaraula/{id}")
+    @GetMapping("/realizaratividade/{id}")
     public String realizarAula(@PathVariable("id") long id, Model model) {
         if (!SessionController.freeAccess())
             return SessionController.LOGIN;
 
-        AulaConcrete aula = aulaRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Id da Matéria inválido:" + id));
-        String url = aula.getAtividade().getUrl_externa();
+        Atividade atividade = atividadeRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Id da Atividade inválido:" + id));
+        String url = atividade.getJogo().getUrl();
 
         if (url.contains("http:")) {
             url = url.replace("http:", "");
@@ -60,8 +63,8 @@ public class AlunoAtividadeController {
         if (!(url.startsWith("//")))
             url = "//".concat(url);
 
-        aula.getAtividade().setUrl_externa(url);
-        model.addAttribute("aula", aula);
+        atividade.getJogo().setUrl(url);
+        model.addAttribute("aula", atividade);
 
         Calendar cal = Calendar.getInstance();
         Date today = cal.getTime();

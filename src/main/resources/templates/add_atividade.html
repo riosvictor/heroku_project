@@ -23,19 +23,33 @@
                             <span th:if="${#fields.hasErrors('descricao')}" th:errors="*{descricao}" class="text-danger"></span>
                             </br>
                         </div>
+
                         <div class="form-group">
-                            <label for="grau" class="col-form-label">Grau</label>
-                            <select th:field="*{grau}" id="grau" class="form-control">
-                                <option th:value="1" th:text="Pré-Escolar"></option>
-                                <option th:value="2" th:text="Escolar"></option>
+                            <label for="conteudo" class="col-form-label">Conteúdo</label>
+                            <br/>
+                            <select id="conteudo" th:field="*{conteudo}" class="form-control"
+                                    data-live-search="true">
+                                <option value=""></option>
+                                <option th:each="c : ${listaConteudos}"
+                                        th:value="${{c.id}}"
+                                        th:text="${c.descricao}">
+                                </option>
                             </select>
-                            <span th:if="${#fields.hasErrors('grau')}" th:errors="*{grau}" class="text-danger"></span>
-                            </br>
+                            <br/>
                         </div>
+
                         <div class="form-group">
-                            <label for="url_externa" class="col-form-label">URL Externa</label>
-                            <input type="text" th:field="*{url_externa}" class="form-control" id="url_externa" placeholder="URL Externa">
-                            <span th:if="${#fields.hasErrors('url_externa')}" th:errors="*{url_externa}" class="text-danger"></span>
+                            <label for="jogo" class="col-form-label">Jogo</label>
+                            <br/>
+                            <select id="jogo" th:field="*{jogo}" class="form-control"
+                                    data-live-search="true">
+                                <option value=""></option>
+                                <option th:each="jogo : ${listaJogos}"
+                                        th:value="${{jogo.id}}"
+                                        th:text="${jogo.descricao}">
+                                </option>
+                            </select>
+                            <br/>
                         </div>
 
                         <div class="row">
@@ -57,5 +71,30 @@
 
 <div th:insert="~{base :: common_script}">
 </div>
+<script>
+    $('select').selectpicker();
+
+    var base_url = window.location.origin;
+
+    $('#conteudo').change(
+        function() {
+            $('#jogo').prop('selectedIndex', 0);
+            $.getJSON(base_url+"/jogos_por_conteudo", {
+                conteudoId : $(this).val(),
+                ajax : 'true'
+            }, function(data) {
+                var html = '<option value=""></option>';
+                var len = data.length;
+                for ( var i = 0; i < len; i++) {
+                    html += '<option value="' + data[i].id + '">'
+                            + data[i].descricao + '</option>';
+                }
+                html += '</option>';
+                $('#jogo').html(html);
+                $('#jogo').selectpicker('refresh');
+            });
+        }
+    );
+</script>
 </body>
 </html>

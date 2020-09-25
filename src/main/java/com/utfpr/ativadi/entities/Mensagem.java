@@ -3,6 +3,8 @@ package com.utfpr.ativadi.entities;
 import java.io.Serializable;
 
 public class Mensagem implements Serializable {
+    private static final long serialVersionUID = 1543304696035377595L;
+
     public enum Funcao {
         ALTERAR,
         REMOVER,

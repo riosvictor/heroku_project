@@ -15,9 +15,6 @@
 
             <div class="row">
                 <div class="col-md-6">
-                    <a href="/newaula" class="btn btn-primary btn-novo d-flex flex-row-reverse"><em class="fas fa-user-plus ml-2"></em></a>
-                    <p></p>
-
                     <h2 th:if="${#lists.isEmpty(aulas)}">Sem registros!</h2>
                     <div th:unless="${#lists.isEmpty(aulas)}">
                         <h2 class="d-flex flex-row">Aulas</h2>
@@ -39,8 +36,15 @@
                                 <td th:text="${aula.professor.nome}"></td>
                                 <td th:text="${aula.materia.descricao}" style="width:80%;"></td>
                                 <td th:text="${aula.turma.descricao}"></td>
-                                <td th:text="${aula.atividade.descricao}"></td>
-                                <td><a th:href="@{/realizaraula/{id}(id=${aula.id})}" class="btn btn-primary"><em class="fas fa-book ml-2"></em></a></td>
+
+                                <tr th:each="atividade : ${aula.atividades}">
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td th:text="${atividade.descricao}"></td>
+                                    <td><a th:href="@{/realizaratividade/{id}(id=${atividade.id})}" class="btn btn-primary"><em class="fas fa-book ml-2"></em></a></td>
+                                </tr>
                             </tr>
                             </tbody>
                         </table>

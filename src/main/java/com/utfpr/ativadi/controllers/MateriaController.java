@@ -2,38 +2,43 @@ package com.utfpr.ativadi.controllers;
 
 import com.utfpr.ativadi.entities.Materia;
 import com.utfpr.ativadi.entities.Mensagem;
-import com.utfpr.ativadi.entities.Turma;
-import com.utfpr.ativadi.repositories.AssuntoRepository;
+import com.utfpr.ativadi.repositories.ConteudoRepository;
+import com.utfpr.ativadi.repositories.GrauRepository;
 import com.utfpr.ativadi.repositories.MateriaRepository;
 import com.utfpr.ativadi.repositories.TurmaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 
 import javax.validation.Valid;
-import java.util.ArrayList;
-import java.util.List;
 
 @Controller
 public class MateriaController {
     private final MateriaRepository materiaRepository;
-    private final AssuntoRepository assuntoRepository;
+    private final ConteudoRepository conteudoRepository;
     private final TurmaRepository turmaRepository;
+    private final GrauRepository grauRepository;
     private final AuditoriaController auditoria;
     private final String ERROR = "errorMessage";
     private final String SUCESS = "sucessMessage";
     private final String INICIO = "index_materia";
     private final String TODAS_MATERIAS = "materias";
-    private final String LOAD_ASSUNTOS = "listaAssuntos";
+    private final String LOAD_CONTEUDOS = "listaConteudos";
+    private final String LOAD_GRAUS = "listaGraus";
 
     @Autowired
-    public MateriaController(MateriaRepository materiaRepository, AssuntoRepository assuntoRepository, AuditoriaController auditoria, TurmaRepository turmaRepository) {
+    public MateriaController(MateriaRepository materiaRepository, ConteudoRepository conteudoRepository,
+                             AuditoriaController auditoria, TurmaRepository turmaRepository,
+                             GrauRepository grauRepository) {
         this.materiaRepository = materiaRepository;
-        this.assuntoRepository = assuntoRepository;
+        this.conteudoRepository = conteudoRepository;
         this.auditoria = auditoria;
         this.turmaRepository = turmaRepository;
+        this.grauRepository = grauRepository;
     }
 
     @GetMapping("/materia")
@@ -50,7 +55,8 @@ public class MateriaController {
         if (!SessionController.freeAccess())
             return SessionController.LOGIN;
 
-        model.addAttribute(LOAD_ASSUNTOS, assuntoRepository.findAll());
+        model.addAttribute(LOAD_CONTEUDOS, conteudoRepository.findAll());
+        model.addAttribute(LOAD_GRAUS, grauRepository.findAll());
         return "add_materia";
     }
 
@@ -60,7 +66,8 @@ public class MateriaController {
             return SessionController.LOGIN;
 
         if (result.hasErrors()) {
-            model.addAttribute(LOAD_ASSUNTOS, assuntoRepository.findAll());
+            model.addAttribute(LOAD_CONTEUDOS, conteudoRepository.findAll());
+            model.addAttribute(LOAD_GRAUS, grauRepository.findAll());
             model.addAttribute(ERROR, Mensagem.getInstance(false, Mensagem.Funcao.ADICIONAR).show());
             return "add_materia";
         }
@@ -80,7 +87,8 @@ public class MateriaController {
 
         Materia materia = materiaRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Id da Matéria inválido:" + id));
         model.addAttribute("materia", materia);
-        model.addAttribute(LOAD_ASSUNTOS, assuntoRepository.findAll());
+        model.addAttribute(LOAD_CONTEUDOS, conteudoRepository.findAll());
+        model.addAttribute(LOAD_GRAUS, grauRepository.findAll());
         return "update_materia";
     }
 
@@ -92,6 +100,8 @@ public class MateriaController {
         if (result.hasErrors()) {
             materia.setId(id);
             model.addAttribute(ERROR, Mensagem.getInstance(false, Mensagem.Funcao.ALTERAR).show());
+            model.addAttribute(LOAD_CONTEUDOS, conteudoRepository.findAll());
+            model.addAttribute(LOAD_GRAUS, grauRepository.findAll());
             return "update_materia";
         }
 
@@ -119,18 +129,5 @@ public class MateriaController {
 
         model.addAttribute(TODAS_MATERIAS, materiaRepository.findAll());
         return INICIO;
-    }
-
-    @RequestMapping(value = "/turma_materia", method = RequestMethod.GET)
-    public @ResponseBody
-    List<Materia> findMateriasByTurma(@RequestParam(value = "turmaId", required = true) Long turmaId) {
-        Turma turma = turmaRepository.findById(turmaId).orElseThrow(() -> new IllegalArgumentException("Id da Turma inválido:" + turmaId));
-        List<Materia> m = materiaRepository.findMateriaByGrau(turma.getGrau());
-
-        for (Materia materia : m){
-            materia.setAssuntos(null);
-        }
-
-        return m;
     }
 }

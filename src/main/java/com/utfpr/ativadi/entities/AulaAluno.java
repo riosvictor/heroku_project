@@ -3,16 +3,23 @@ package com.utfpr.ativadi.entities;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @Table(name = "aula_aluno", schema = "ativadi")
 public class AulaAluno implements Serializable {
+
+    @Transient
+    private static final long serialVersionUID = -5955728501664086754L;
+
     @Id
     protected long id;
 
-    @ManyToOne
-    @JoinColumn(name="id_atividade")
-    private Atividade atividade;
+    @ManyToMany(cascade = CascadeType.DETACH)
+    @JoinTable(name = "aula_aluno_atividade", schema = "ativadi",
+            joinColumns = @JoinColumn(name = "id_aula_aluno", referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(name = "id_atividade", referencedColumnName = "id", table = "atividade"))
+    protected List<Atividade> atividades;
 
     @ManyToOne
     @JoinColumn(name="id_usuario")
@@ -27,9 +34,9 @@ public class AulaAluno implements Serializable {
     public AulaAluno() {
     }
 
-    public AulaAluno(long id, Atividade atividade, Usuario usuario, int pontuacao, Date data_realizacao, Date data_programacao) {
+    public AulaAluno(long id, List<Atividade> atividades, Usuario usuario, int pontuacao, Date data_realizacao, Date data_programacao) {
         this.id = id;
-        this.atividade = atividade;
+        this.atividades = atividades;
         this.usuario = usuario;
         this.pontuacao = pontuacao;
         this.data_realizacao = data_realizacao;
@@ -44,12 +51,12 @@ public class AulaAluno implements Serializable {
         this.id = id;
     }
 
-    public Atividade getAtividade() {
-        return atividade;
+    public List<Atividade> getAtividade() {
+        return atividades;
     }
 
-    public void setAtividade(Atividade atividade) {
-        this.atividade = atividade;
+    public void setAtividade(List<Atividade> atividade) {
+        this.atividades = atividade;
     }
 
     public Usuario getUsuario() {

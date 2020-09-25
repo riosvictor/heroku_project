@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="pt-br">
 <head th:replace="base :: common_header(~{::title})">
-    <title>Alterar Turma</title>
+    <title>Adicionar Jogo</title>
 </head>
 
 <body>
@@ -11,33 +11,32 @@
 
     <div id="home" class="slider-area">
         <div class="container my-5">
-            <h2 class="mb-5">Alterar Turma</h2>
+            <h2 class="mb-5">Adicionar Jogo</h2>
             <div th:if="${errorMessage}" th:text="${errorMessage}" style="color:red"/>
 
             <div class="row">
                 <div class="col-md-6">
-                    <form action="#" th:action="@{/updateturma/{id}(id=${turma.id})}" th:object="${turma}" method="post">
+                    <form action="#" th:action="@{/addjogo}" th:object="${jogo}" method="post">
                         <div class="form-group">
                             <label for="descricao" class="col-form-label">Descrição</label>
-                            <input type="text" th:field="*{descricao}" class="form-control" id="descricao" placeholder="Descrição"/>
-                            <span th:if="${#fields.hasErrors('descricao')}" th:errors="*{descricao}" class="text-danger"></span>
-                            </br>
+                            <input autofocus type="text" th:field="*{descricao}" class="form-control" id="descricao"
+                                   placeholder="Descrição">
+                            <span th:if="${#fields.hasErrors('descricao')}" th:errors="*{descricao}"
+                                  class="text-danger"></span>
                         </div>
 
                         <div class="form-group">
-                            <label for="turno" class="col-form-label">Turno</label>
-                            <select th:field="*{turno}" id="turno" class="form-control">
-                                <option th:value="1" th:text="Matutino"></option>
-                                <option th:value="2" th:text="Vespertino"></option>
-                            </select>
-                            <span th:if="${#fields.hasErrors('turno')}" th:errors="*{turno}" class="text-danger"></span>
-                            </br>
+                            <label for="url" class="col-form-label">Url</label>
+                            <input autofocus type="text" th:field="*{url}" class="form-control" id="url"
+                                   placeholder="Url">
+                            <span th:if="${#fields.hasErrors('url')}" th:errors="*{url}"
+                                  class="text-danger"></span>
                         </div>
 
                         <div class="row">
                             <div class="d-inline p-3">
                                 <input type="submit" class="btn btn-primary" value="Confirmar">
-                                <a href="/turma" class="btn btn-primary">Voltar</a>
+                                <a href="/jogo" class="btn btn-primary">Voltar</a>
                             </div>
                         </div>
                     </form>

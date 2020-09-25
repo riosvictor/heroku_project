@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="pt-br">
+    <head th:replace="base :: common_header(~{::title})">
+        <title>Conteúdo</title>
+    </head>
+
+    <body>
+        <section class="header-area">
+            <div class="navbar-area" th:insert="~{base :: common_navbar}">
+            </div>
+
+            <div id="home" class="slider-area">
+                <div th:switch="${conteudos}" class="container my-5">
+                    <div th:if="${errorMessage}" th:text="${errorMessage}" style="color:red"/>
+                    <div th:if="${sucessMessage}" th:text="${sucessMessage}" style="color:green"/>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <a href="/newconteudo" class="btn btn-primary btn-novo d-flex flex-row-reverse"><em class="fas fa-user-plus ml-2"></em></a>
+                            <p></p>
+
+                            <h2 th:if="${#lists.isEmpty(conteudos)}">Sem registros!</h2>
+                            <div th:unless="${#lists.isEmpty(conteudos)}">
+                                <h2 class="d-flex flex-row">Conteúdos</h2>
+                                <table class="table table-striped" style="width:100%;">
+                                    <caption>Conteúdos cadastrados</caption>
+                                    <thead class="thead-light">
+                                    <tr>
+                                        <th scope="col">Descrição</th>
+                                        <th scope="col">Objetivos</th>
+                                        <th scope="col">Jogos</th>
+                                        <th scope="col">Alterar</th>
+                                        <th scope="col">Remover</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr th:each="conteudo : ${conteudos}">
+                                        <td th:text="${conteudo.descricao}" style="width:80%;"></td>
+                                        <td th:text="${conteudo.objetivos}" style="width:80%;"></td>
+                                        <td th:text="${#lists.size(conteudo.jogos)}" style="width:80%;"></td>
+                                        <td><a th:href="@{/editconteudo/{id}(id=${conteudo.id})}" class="btn btn-primary"><em class="fas fa-user-edit ml-2"></em></a></td>
+                                        <td><a th:href="@{/deleteconteudo/{id}(id=${conteudo.id})}" class="btn btn-primary"><em class="fas fa-user-times ml-2"></em></a></td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </section>
+
+        <footer id="footer" class="footer-area" th:insert="~{base :: common_footer}">
+        </footer>
+
+        <div th:insert="~{base :: common_script}">
+        </div>
+    </body>
+</html>

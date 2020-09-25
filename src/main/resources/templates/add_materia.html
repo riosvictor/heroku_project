@@ -25,19 +25,16 @@
                         </div>
 
                         <div class="form-group">
-                            <label for="grau" class="col-form-label">Grau</label>
-                            <select th:field="*{grau}" id="grau" class="form-control">
-                                <option th:value="1" th:text="Pré-Escolar"></option>
-                                <option th:value="2" th:text="Escolar"></option>
+                            <label for="graus" class="col-form-label">Grau(s)</label>
+                            <br />
+                            <select id="graus" th:field="*{graus}" class="form-control selectpicker" multiple="multiple" data-live-search="true">
+                                <option th:each="g : ${listaGraus}"
+                                        th:value="${g.id}"
+                                        th:text="${g.descricao}">
+                                </option>
                             </select>
-                            <span th:if="${#fields.hasErrors('grau')}" th:errors="*{grau}" class="text-danger"></span>
-                            </br>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="objetivos" class="col-form-label">Objetivos</label>
-                            <textarea th:field="*{objetivos}" class="form-control" id="objetivos" placeholder="Objetivos"/>
-                            <span th:if="${#fields.hasErrors('objetivos')}" th:errors="*{objetivos}" class="text-danger"></span>
+                            <span th:if="${#fields.hasErrors('graus')}" th:errors="*{graus}" class="text-danger"></span>
+                            <br />
                         </div>
 
                         <div class="form-group">
@@ -51,14 +48,15 @@
                         </div>
 
                         <div class="form-group">
-                            <label for="assuntos" class="col-form-label">Assuntos</label>
+                            <label for="conteudos" class="col-form-label">Conteúdos</label>
                             <br />
-                            <select id="assuntos" th:field="*{assuntos}" class="form-control" multiple="multiple" data-live-search="true">
-                                <option th:each="assunto : ${listaAssuntos}"
-                                        th:value="${{assunto.id}}"
-                                        th:text="${assunto.descricao}">
+                            <select id="conteudos" th:field="*{conteudos}" class="form-control selectpicker" multiple="multiple" data-live-search="true">
+                                <option th:each="conteudo : ${listaConteudos}"
+                                        th:value="${{conteudo.id}}"
+                                        th:text="${conteudo.descricao}">
                                 </option>
                             </select>
+                            <span th:if="${#fields.hasErrors('conteudos')}" th:errors="*{conteudos}" class="text-danger"></span>
                             <br />
                         </div>
 
