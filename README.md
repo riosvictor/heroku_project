@@ -11,3 +11,6 @@ Utilizando:
  * IntelliJ IDEA Community
  * Bootstrap
  * JQuery
+
+
+Feito inicialmente por: Vinicius Schultz e Paulo Victor Rios
